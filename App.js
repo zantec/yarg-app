@@ -22,16 +22,12 @@ import {
   ViroARSceneNavigator
 } from 'react-viro';
 
-/*
- TODO: Insert your API key below
- */
 var sharedProps = {
   apiKey: "49B2B4B9-11BF-443C-9B41-5322FBEC2C83",
 }
 
-// Sets the default scene you want for AR and VR
-var InitialARScene = require('./js/HelloWorldSceneAR');
-
+// Sets the default scene you want for AR
+var InitialARScene = require('./js/yargARScene');
 
 export default class ViroSample extends Component {
   constructor() {
@@ -50,9 +46,11 @@ export default class ViroSample extends Component {
   render() {
     return (
       <View style={localStyles.outer}>
-        <Switch 
-        onValueChange={this._toggleARView()}
-        value={this.state.viewAR}/>
+        <View>
+          <Switch
+            onValueChange={this._toggleARView()}
+            value={this.state.viewAR} />
+        </View>
         {this.state.viewAR ? this._getARNavigator() : <Text>WALUIGI</Text>}
       </View>
     )
@@ -63,8 +61,7 @@ export default class ViroSample extends Component {
     return (
       <View style={localStyles.viroContainer}>
         <ViroARSceneNavigator {...this.state.sharedProps}
-          initialScene={{scene: InitialARScene}}
-          style={localStyles.viroContainer}/>
+          initialScene={{scene: InitialARScene}}/>
       </View>
     );
   }

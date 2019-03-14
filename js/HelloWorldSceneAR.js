@@ -2,7 +2,11 @@
 
 import React, { Component } from 'react';
 
-import {StyleSheet} from 'react-native';
+import {
+  StyleSheet,
+  Switch,
+  View
+} from 'react-native';
 
 import {
   ViroARScene,
@@ -26,9 +30,10 @@ export default class HelloWorldSceneAR extends Component {
 
   render() {
     return (
-      <ViroARScene onTrackingUpdated={this._onInitialized} >
-        <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
-      </ViroARScene>
+
+        <ViroARScene onTrackingUpdated={this._onInitialized} >
+          <ViroText text={this.state.text} scale={[.5, .5, .5]} position={[0, 0, -1]} style={styles.helloWorldTextStyle} />
+        </ViroARScene>
     );
   }
 

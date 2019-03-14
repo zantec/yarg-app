@@ -32,19 +32,12 @@ var sharedProps = {
 // Sets the default scene you want for AR and VR
 var InitialARScene = require('./js/HelloWorldSceneAR');
 
-var UNSET = "UNSET";
-var AR_NAVIGATOR_TYPE = "AR";
-
-// This determines which type of experience to launch in, or UNSET, if the user should
-// be presented with a choice of AR or VR. By default, we offer the user a choice.
-var defaultNavigatorType = UNSET;
 
 export default class ViroSample extends Component {
   constructor() {
     super();
 
     this.state = {
-      navigatorType : defaultNavigatorType,
       sharedProps : sharedProps,
       viewAR : false,
     }
@@ -52,8 +45,8 @@ export default class ViroSample extends Component {
     this._toggleARView = this._toggleARView.bind(this);
   }
 
-  // Replace this function with the contents of _getVRNavigator() or _getARNavigator()
-  // if you are building a specific type of experience.
+  // Currently, returns a blank screen with a Switch component that toggles
+  // the AR view on and off
   render() {
     return (
       <View style={localStyles.outer}>
@@ -76,8 +69,7 @@ export default class ViroSample extends Component {
     );
   }
 
-  // This function returns an anonymous/lambda function to be used
-  // by the experience selector buttons
+  // Toggles the boolean value for viewAR property on state
   _toggleARView() {
     return () => {
       this.setState({

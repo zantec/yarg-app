@@ -22,6 +22,8 @@ import {
   ViroARSceneNavigator
 } from 'react-viro';
 
+import MapView from './js/mapView.js'
+
 var sharedProps = {
   apiKey: "49B2B4B9-11BF-443C-9B41-5322FBEC2C83",
 }
@@ -46,12 +48,10 @@ export default class ViroSample extends Component {
   render() {
     return (
       <View style={localStyles.outer}>
-        <View>
-          <Switch
-            onValueChange={this._toggleARView()}
-            value={this.state.viewAR} />
-        </View>
-        {this.state.viewAR ? this._getARNavigator() : <Text>WALUIGI</Text>}
+        <Switch
+          onValueChange={this._toggleARView()}
+          value={this.state.viewAR} />
+        {this.state.viewAR ? this._getARNavigator() : <MapView/>}
       </View>
     )
   }
@@ -80,17 +80,17 @@ export default class ViroSample extends Component {
 var localStyles = StyleSheet.create({
   viroContainer :{
     flex : 1,
-    backgroundColor: "black",
+    // backgroundColor: "black",
   },
   outer : {
     flex : 1,
-    flexDirection: 'row',
-    alignItems:'center',
-    backgroundColor: "black",
+    // flexDirection: 'row',
+    // alignItems:'center',
+    backgroundColor: 'black',
   },
   inner: {
     flex : 1,
-    flexDirection: 'column',
+    // flexDirection: 'column',
     alignItems:'center',
     backgroundColor: "black",
   },

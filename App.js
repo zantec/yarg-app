@@ -22,7 +22,9 @@ import {
   ViroARSceneNavigator
 } from 'react-viro';
 
-import MapView from './js/MapView.js'
+import Map from './js/Map.js'
+import Login from './js/Login.js'
+import Profile from './js/Profile.js'
 
 var sharedProps = {
   apiKey: "49B2B4B9-11BF-443C-9B41-5322FBEC2C83",
@@ -31,27 +33,28 @@ var sharedProps = {
 // Sets the default scene you want for AR
 var InitialARScene = require('./js/ARScene');
 
-export default class ViroSample extends Component {
+export default class App extends Component {
   constructor() {
     super();
 
     this.state = {
-      sharedProps : sharedProps,
-      viewAR : false,
+      sharedProps: sharedProps,
+      viewAR: false,
     }
     this._getARNavigator = this._getARNavigator.bind(this);
     this._toggleARView = this._toggleARView.bind(this);
   }
 
-  // Currently, returns a blank screen with a Switch component that toggles
-  // the AR view on and off
+
   render() {
     return (
       <View style={localStyles.outer}>
         <Switch
           onValueChange={this._toggleARView()}
           value={this.state.viewAR} />
-        {this.state.viewAR ? this._getARNavigator() : <MapView/>}
+        {this.state.viewAR ? this._getARNavigator() : <Map />}
+        <Profile />
+        <Login />
       </View>
     )
   }
@@ -61,7 +64,7 @@ export default class ViroSample extends Component {
     return (
       <View style={localStyles.viroContainer}>
         <ViroARSceneNavigator {...this.state.sharedProps}
-          initialScene={{scene: InitialARScene}}/>
+          initialScene={{ scene: InitialARScene }} />
       </View>
     );
   }
@@ -70,7 +73,7 @@ export default class ViroSample extends Component {
   _toggleARView() {
     return () => {
       this.setState({
-        viewAR : !this.state.viewAR
+        viewAR: !this.state.viewAR
       })
     }
   }
@@ -78,58 +81,58 @@ export default class ViroSample extends Component {
 }
 
 var localStyles = StyleSheet.create({
-  viroContainer :{
-    flex : 1,
+  viroContainer: {
+    flex: 1,
     // backgroundColor: "black",
   },
-  outer : {
-    flex : 1,
+  outer: {
+    flex: 1,
     // flexDirection: 'row',
     // alignItems:'center',
     backgroundColor: 'black',
   },
   inner: {
-    flex : 1,
+    flex: 1,
     // flexDirection: 'column',
-    alignItems:'center',
+    alignItems: 'center',
     backgroundColor: "black",
   },
   titleText: {
     paddingTop: 30,
     paddingBottom: 20,
-    color:'#fff',
-    textAlign:'center',
-    fontSize : 25
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 25
   },
   buttonText: {
-    color:'#fff',
-    textAlign:'center',
-    fontSize : 20
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: 20
   },
-  buttons : {
+  buttons: {
     height: 80,
     width: 150,
-    paddingTop:20,
-    paddingBottom:20,
+    paddingTop: 20,
+    paddingBottom: 20,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor:'#68a0cf',
+    backgroundColor: '#68a0cf',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#fff',
   },
-  exitButton : {
+  exitButton: {
     height: 50,
     width: 100,
-    paddingTop:10,
-    paddingBottom:10,
+    paddingTop: 10,
+    paddingBottom: 10,
     marginTop: 10,
     marginBottom: 10,
-    backgroundColor:'#68a0cf',
+    backgroundColor: '#68a0cf',
     borderRadius: 10,
     borderWidth: 1,
     borderColor: '#fff',
   }
 });
 
-module.exports = ViroSample
+module.exports = App

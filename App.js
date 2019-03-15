@@ -22,14 +22,14 @@ import {
   ViroARSceneNavigator
 } from 'react-viro';
 
-import MapView from './js/mapView.js'
+import MapView from './js/MapView.js'
 
 var sharedProps = {
   apiKey: "49B2B4B9-11BF-443C-9B41-5322FBEC2C83",
 }
 
 // Sets the default scene you want for AR
-var InitialARScene = require('./js/yargARScene');
+var InitialARScene = require('./js/ARScene');
 
 export default class ViroSample extends Component {
   constructor() {

@@ -27,7 +27,6 @@ export default class ARView extends React.Component {
     for (const intersect of intersects) {
       const { distance, face, faceIndex, object, point, uv } = intersect;
       this.scene.remove(object);
-      object.position.set(point.x, point.y, point.z);
     }
   };
   
@@ -57,53 +56,12 @@ export default class ARView extends React.Component {
           onRender={this.onRender}
           onResize={this.onResize}
           isArEnabled
-          isArRunningStateEnabled
           isArCameraStateEnabled
           arTrackingConfiguration={AR.TrackingConfiguration.World}
         />
       </TouchableView>
     );
   }
-
-  onTouchesBegan = async ({ locationX: x, locationY: y }) => {
-    if (!this.renderer) {
-      return;
-    }
-
-    const size = this.renderer.getSize();
-    console.log('touch', { x, y, ...size });
-
-    //const position = ThreeAR.improviseHitTest({x, y}); <- Good for general purpose: "I want a point, I don't care how"
-    const { hitTest } = await AR.performHitTest(
-      {
-        x: x / size.width,
-        y: y / size.height,
-      },
-      AR.HitTestResultTypes.HorizontalPlane
-    );
-
-    for (let hit of hitTest) {
-      const { worldTransform } = hit;
-      if (this.cube) {
-        this.scene.remove(this.cube);
-      }
-
-      const geometry = new THREE.BoxGeometry(0.0254, 0.0254, 0.0254);
-      const material = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
-      });
-      this.cube = new THREE.Mesh(geometry, material);
-      this.scene.add(this.cube);
-
-      this.cube.matrixAutoUpdate = false;
-
-      const matrix = new THREE.Matrix4();
-      matrix.fromArray(worldTransform);
-
-      this.cube.applyMatrix(matrix);
-      this.cube.updateMatrix();
-    }
-  };
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
@@ -134,7 +92,8 @@ export default class ARView extends React.Component {
     const spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: '#fff' });
     this.sprite = new THREE.Sprite(spriteMaterial);
     this.sprite.scale.set(1, 1, 1);
-    this.sprite.position.z = -1
+    this.sprite.position.z = -5;
+    this.sprite.position.y = -2;
     this.scene.add(this.sprite);
 
     // Setup a light so we can see the cube color
@@ -143,8 +102,8 @@ export default class ARView extends React.Component {
 
     // Create this cool utility function that let's us see all the raw data points.
     this.points = new ThreeAR.Points();
-    // Add the points to our scene...
-    this.scene.add(this.points)
+    // // Add the points to our scene...
+    // this.scene.add(this.points)
   };
 
   // When the phone rotates, or the view changes size, this method will be called.

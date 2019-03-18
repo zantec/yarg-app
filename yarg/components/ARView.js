@@ -7,7 +7,30 @@ import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
 
-export default class App extends React.Component {
+import TouchableView from '../components/TouchableView';
+
+export default class ARView extends React.Component {
+  touch = new THREE.Vector2();
+  raycaster = new THREE.Raycaster();
+
+  updateTouch = ({ x, y }) => {
+    const { width, height } = this.scene.size;
+    this.touch.x = x / width * 2 - 1;
+    this.touch.y = -(y / height) * 2 + 1;
+
+    this.runHitTest();
+  };
+
+  runHitTest = () => {
+    this.raycaster.setFromCamera(this.touch, this.camera);
+    const intersects = this.raycaster.intersectObjects(this.scene.children);
+    for (const intersect of intersects) {
+      const { distance, face, faceIndex, object, point, uv } = intersect;
+      this.scene.remove(object);
+      object.position.set(point.x, point.y, point.z);
+    }
+  };
+  
   componentDidMount() {
     // Turn off extra warnings
     THREE.suppressExpoWarnings(true)
@@ -21,18 +44,66 @@ export default class App extends React.Component {
     // `arTrackingConfiguration` denotes which camera the AR Session will use. 
     // World for rear, Face for front (iPhone X only)
     return (
-      <GraphicsView
+      <TouchableView
         style={{ flex: 1 }}
-        onContextCreate={this.onContextCreate}
-        onRender={this.onRender}
-        onResize={this.onResize}
-        isArEnabled
-        isArRunningStateEnabled
-        isArCameraStateEnabled
-        arTrackingConfiguration={AR.TrackingConfiguration.World}
-      />
+        onTouchesBegan={({ locationX, locationY }) =>
+          this.updateTouch({ x: locationX, y: locationY })}
+        onTouchesMoved={({ locationX, locationY }) =>
+          this.updateTouch({ x: locationX, y: locationY })}
+      >
+        <GraphicsView
+          style={{ flex: 1 }}
+          onContextCreate={this.onContextCreate}
+          onRender={this.onRender}
+          onResize={this.onResize}
+          isArEnabled
+          isArRunningStateEnabled
+          isArCameraStateEnabled
+          arTrackingConfiguration={AR.TrackingConfiguration.World}
+        />
+      </TouchableView>
     );
   }
+
+  onTouchesBegan = async ({ locationX: x, locationY: y }) => {
+    if (!this.renderer) {
+      return;
+    }
+
+    const size = this.renderer.getSize();
+    console.log('touch', { x, y, ...size });
+
+    //const position = ThreeAR.improviseHitTest({x, y}); <- Good for general purpose: "I want a point, I don't care how"
+    const { hitTest } = await AR.performHitTest(
+      {
+        x: x / size.width,
+        y: y / size.height,
+      },
+      AR.HitTestResultTypes.HorizontalPlane
+    );
+
+    for (let hit of hitTest) {
+      const { worldTransform } = hit;
+      if (this.cube) {
+        this.scene.remove(this.cube);
+      }
+
+      const geometry = new THREE.BoxGeometry(0.0254, 0.0254, 0.0254);
+      const material = new THREE.MeshBasicMaterial({
+        color: 0x00ff00,
+      });
+      this.cube = new THREE.Mesh(geometry, material);
+      this.scene.add(this.cube);
+
+      this.cube.matrixAutoUpdate = false;
+
+      const matrix = new THREE.Matrix4();
+      matrix.fromArray(worldTransform);
+
+      this.cube.applyMatrix(matrix);
+      this.cube.updateMatrix();
+    }
+  };
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
@@ -49,33 +120,22 @@ export default class App extends React.Component {
 
     // We will add all of our meshes to this scene.
     this.scene = new THREE.Scene();
+
+    this.scene.size = { width, height };
     // This will create a camera texture and use it as the background for our scene
     this.scene.background = new ThreeAR.BackgroundTexture(this.renderer);
     // Now we make a camera that matches the device orientation. 
     // Ex: When we look down this camera will rotate to look down too!
     this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
 
-    var texture = new THREE.TextureLoader().load('./res/x.png');
 
-    var spriteMap = await ExpoTHREE.loadTextureAsync({ asset: require('./res/x.png') })
-    var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: '#fff' });
+    // Create a sprite from X.png and add it to the scene
+    const spriteMap = await ExpoTHREE.loadTextureAsync({ asset: require('./res/x.png') })
+    const spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: '#fff' });
     this.sprite = new THREE.Sprite(spriteMaterial);
     this.sprite.scale.set(1, 1, 1);
     this.sprite.position.z = -1
     this.scene.add(this.sprite);
-
-
-    // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
-    const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-    // Simple color material
-    const material = new THREE.MeshBasicMaterial({ map: texture });
-
-    // Combine our geometry and material
-    this.cube = new THREE.Mesh(geometry, material);
-    // Place the box 0.4 meters in front of us.
-    this.cube.position.z = -0.4
-    // Add the cube to the scene
-    // this.scene.add(this.cube);
 
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.

@@ -7,12 +7,13 @@ import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
 
-export default class ARView extends React.Component {
+export default class App extends React.Component {
   componentDidMount() {
     // Turn off extra warnings
-    THREE.suppressExpoWarnings()
+    THREE.suppressExpoWarnings(true)
+    ThreeAR.suppressWarnings()
   }
-  
+
   render() {
     // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
     // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
@@ -53,49 +54,37 @@ export default class ARView extends React.Component {
     // Now we make a camera that matches the device orientation. 
     // Ex: When we look down this camera will rotate to look down too!
     this.camera = new ThreeAR.Camera(width, height, 0.01, 1000);
+
+    var texture = new THREE.TextureLoader().load('./res/x.png');
+
+    var spriteMap = await ExpoTHREE.loadTextureAsync({ asset: require('./res/x.png') })
+    var spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: '#fff' });
+    this.sprite = new THREE.Sprite(spriteMaterial);
+    this.sprite.scale.set(1, 1, 1);
+    this.sprite.position.z = -1
+    this.scene.add(this.sprite);
+
+
     // Make a cube - notice that each unit is 1 meter in real life, we will make our box 0.1 meters
     const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
     // Simple color material
-    const material = new THREE.MeshPhongMaterial({
-      color: 0xff00ff,
-    });
-    
+    const material = new THREE.MeshBasicMaterial({ map: texture });
+
     // Combine our geometry and material
     this.cube = new THREE.Mesh(geometry, material);
     // Place the box 0.4 meters in front of us.
     this.cube.position.z = -0.4
     // Add the cube to the scene
     // this.scene.add(this.cube);
+
     // Setup a light so we can see the cube color
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
-  };
 
-  /// Magic happens here!
-  loadModelsAsync = async () => {
-    /// Get all the files in the mesh
-    const model = {
-      'X.obj': Asset.fromModule('./res/x.png'),
-    };
-
-    /// Load model!
-    const mesh = await ExpoTHREE.loadAsync(
-      [model['X.obj']],
-      null,
-      name => model[name],
-    );
-
-    /// Update size and position
-    ExpoTHREE.utils.scaleLongestSideToSize(mesh, 5);
-    ExpoTHREE.utils.alignMesh(mesh, { y: 1 });
-    /// Smooth mesh
-    // ExpoTHREE.utils.computeMeshNormals(mesh);
-
-    /// Add the mesh to the scene
-    this.scene.add(mesh);
-
-    /// Save it so we can rotate
-    this.mesh = mesh;
+    // Create this cool utility function that let's us see all the raw data points.
+    this.points = new ThreeAR.Points();
+    // Add the points to our scene...
+    this.scene.add(this.points)
   };
 
   // When the phone rotates, or the view changes size, this method will be called.
@@ -112,6 +101,8 @@ export default class ARView extends React.Component {
 
   // Called every frame.
   onRender = () => {
+    // This will make the points get more rawDataPoints from Expo.AR
+    this.points.update()
     // Finally render the scene with the AR Camera
     this.renderer.render(this.scene, this.camera);
   };

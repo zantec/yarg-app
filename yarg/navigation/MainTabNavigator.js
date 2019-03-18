@@ -53,7 +53,7 @@ MapStack.navigationOptions = {
   ),
 };
 export default createBottomTabNavigator({
+  MapStack,
   HomeStack,
   ARStack,
-  MapStack
 });

@@ -96,7 +96,7 @@ export default class ARView extends React.Component {
     this.sprite.position.y = -2;
     this.scene.add(this.sprite);
 
-    // Setup a light so we can see the cube color
+
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
 

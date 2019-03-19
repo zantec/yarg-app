@@ -12,18 +12,18 @@ export default class Map extends React.Component {
         longitude: -90.0758853,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
-      }
+      },
     }
   }
 
   render() {
     return (
-      <MapView
-        style={{ flex: 1 }}
-        initialRegion={this.state.region}
-      >
-      <Marker coordinate={this.state.region}/>
-      </MapView>
+        <MapView
+          style={{ flex: 1 }}
+          initialRegion={this.state.region}
+        >
+          <Marker coordinate={this.state.region}/>
+        </MapView>
     );
   }
 }

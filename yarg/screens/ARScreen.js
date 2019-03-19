@@ -3,11 +3,10 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import Map from '../components/Map.js'
-import RiddleModal from '../components/RiddleModal.js'
+import ARView from '../components/ARView.js'
 import Gold from '../components/Gold.js'
 
-export default class AuthScreen extends React.Component {
+export default class ARScreen extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -16,8 +15,7 @@ export default class AuthScreen extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <Map />
-        <RiddleModal/>
+        <ARView />
         <Gold/>
       </View>
     );

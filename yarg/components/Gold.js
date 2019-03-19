@@ -6,6 +6,10 @@ export default class Gold extends Component {
     amount: 0
   };
 
+  componentDidMount() {
+    //send request to server for current user gold
+  }
+
   render() {
     return (
       <View>

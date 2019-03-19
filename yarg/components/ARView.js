@@ -26,9 +26,16 @@ export default class ARView extends React.Component {
     const intersects = this.raycaster.intersectObjects(this.scene.children);
     for (const intersect of intersects) {
       const { distance, face, faceIndex, object, point, uv } = intersect;
-      this.scene.remove(object);
+      //pass in the tapped object (the X) to function that will handle removing
+      //it and updating database values for user gold/treasure & transactions
+      this.claimTreasureUpdateGold(object);
     }
   };
+
+  claimTreasureUpdateGold = (tappedX) => {
+    this.scene.remove(tappedX);
+    //send requests here.
+  }
   
   componentDidMount() {
     // Turn off extra warnings

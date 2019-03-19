@@ -26,5 +26,12 @@
       "supportsTablet": true
     },
     "description": ""
+  },
+  "packagerOpts": {
+    "assetExts": [
+      "dae",
+      "obj",
+      "mtl"
+    ]
   }
 }

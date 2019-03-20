@@ -5,6 +5,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import ARScreen from '../screens/ARScreen'
 import MapScreen from '../screens/MapScreen'
+import ProfileScreen from '../screens/ProfileScreen'
+import ProfileNavigator from './ProfileNavigator'
 
 
 const ARStack = createStackNavigator({
@@ -34,7 +36,22 @@ MapStack.navigationOptions = {
     />
   ),
 };
+
+const ProfileStack = createStackNavigator({
+  Profile: ProfileNavigator,
+});
+
+ProfileStack.navigationOptions = {
+  tabBarLabel: 'AR',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+    />
+  ),
+};
 export default createBottomTabNavigator({
   MapStack,
   ARStack,
+  ProfileStack
 });

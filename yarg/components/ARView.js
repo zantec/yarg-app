@@ -1,11 +1,12 @@
 import React from 'react';
-import { AR, Asset } from 'expo';
+import { AR, Asset, Constants } from 'expo';
 // Let's alias ExpoTHREE.AR as ThreeAR so it doesn't collide with Expo.AR.
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 // Let's also import `expo-graphics`
 // expo-graphics manages the setup/teardown of the gl context/ar session, creates a frame-loop, and observes size/orientation changes.
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
+import axios from 'axios';
 
 import TouchableView from '../components/TouchableView';
 
@@ -34,13 +35,20 @@ export default class ARView extends React.Component {
 
   claimTreasureUpdateGold = (tappedX) => {
     this.scene.remove(tappedX);
-    //send requests here.
+    //         `${Constants.manifest.extra.SERVER_API}/user/gold`
+    //placeholder url so things don't break. need to replace w ^
+    axios.patch('https://reqres.in/api/users?page=2', {
+      username: 'acreed1998',
+      amount: 1000
+    })
+    .then(res => console.log(res))
+    .catch(err => console.error(err))
   }
   
   componentDidMount() {
     // Turn off extra warnings
-    THREE.suppressExpoWarnings(true)
-    ThreeAR.suppressWarnings()
+    THREE.suppressExpoWarnings(true);
+    ThreeAR.suppressWarnings();
   }
 
   render() {

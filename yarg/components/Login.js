@@ -24,7 +24,10 @@ export default class Login extends React.Component {
       Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/login?username=${this.state.username}&password=${this.state.password}`).then((result) => {
         this.props.screenProps.appLogin(result.data);
       }).catch((err) => {
-
+        this.setState({
+          username: '',
+          password: '',
+        });
       });
     } else {
       Axios({
@@ -37,35 +40,42 @@ export default class Login extends React.Component {
       }).then((result) => {
         this.props.screenProps.appLogin(result.data);
       }).catch((err) => {
-        
+        this.setState({
+          username: '',
+          password: '',
+        })
       });
     }
   }
 
   render() {
-    return (
-      <View style={styles.loginContainer}>
-        <TextInput
-          style={styles.loginInput}
-          onChangeText={(text) => this.setState({ username: text })}
-          placeholder='username'
-          value={this.state.username}
-        />
-        <TextInput
-          style={styles.passwordInput}
-          onChangeText={(text) => this.setState({ password: text })}
-          secureTextEntry={true}
-          placeholder='password'
-          value={this.state.password}
-        />
-        <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
-          <Text style={styles.btntext}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
-          <Text style={styles.btntext}>Signup</Text>
-        </TouchableOpacity>
-      </View>
-    );
+    if (this.state.success === false) {
+      return (
+        <View style={styles.loginContainer}>
+          <TextInput
+            style={styles.loginInput}
+            onChangeText={(text) => this.setState({ username: text })}
+            placeholder='username'
+            value={this.state.username}
+          />
+          <TextInput
+            style={styles.passwordInput}
+            onChangeText={(text) => this.setState({ password: text })}
+            secureTextEntry={true}
+            placeholder='password'
+            value={this.state.password}
+          />
+          <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
+            <Text style={styles.btntext}>Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
+            <Text style={styles.btntext}>Signup</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      <div>Login/Signup Successful</div>
+    }
   }
 }
 

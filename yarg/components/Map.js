@@ -29,7 +29,7 @@ export default class Map extends React.Component {
       Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?zipcode=${result.nativeEvent.coordinate.zipcode}`).then((riddlesResult) => {
         scope.setState({
           treasures: treasuresResult.data,
-          riddles: riddlesResult,
+          riddles: riddlesResult.data,
         });
       }).catch((err) => {
 

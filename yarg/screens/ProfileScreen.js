@@ -5,7 +5,6 @@ import {
 } from 'react-native'
 import { NavigationEvents } from 'react-navigation'
 
-import ProfileNavigator from '../navigation/ProfileNavigator'
 import Gold from '../components/Gold.js'
 
 export default class MapScreen extends React.Component {

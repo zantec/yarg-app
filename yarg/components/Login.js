@@ -23,6 +23,9 @@ export default class Login extends React.Component {
     if (event.target.innerText === 'Login') {
       Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/login?username=${this.state.username}&password=${this.state.password}`).then((result) => {
         this.props.screenProps.appLogin(result.data);
+        this.setState({
+          success: true,
+        });
       }).catch((err) => {
         this.setState({
           username: '',
@@ -39,6 +42,9 @@ export default class Login extends React.Component {
         },
       }).then((result) => {
         this.props.screenProps.appLogin(result.data);
+        this.setState({
+          success: true,
+        });
       }).catch((err) => {
         this.setState({
           username: '',

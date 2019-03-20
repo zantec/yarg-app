@@ -2,6 +2,8 @@ import React from 'react';
 import {
   StyleSheet,
   View,
+  TouchableOpacity,
+  Button
 } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import axios from 'axios';
@@ -29,7 +31,13 @@ export default class MapScreen extends React.Component {
             this.props.screenProps.getGold();
           }}
         />
+        <Button
+          title={'Profile'}
+          style={{ backgroundColor: 'black' }}
+          onPress={() => this.props.navigation.navigate('Profile')}
+        />
         <Gold goldAmount={this.props.screenProps.goldAmount} />
+      
       </View>
     );
   }

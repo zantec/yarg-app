@@ -16,11 +16,18 @@ export default class Map extends React.Component {
     }
   }
 
+  onRegionChange(region) {
+    this.setState({ region });
+  }
+
   render() {
     return (
         <MapView
           style={{ flex: 1 }}
           initialRegion={this.state.region}
+          onRegionChange={this.onRegionChange}
+          showsUserLocation={true}
+          showsMyLocationButton={true}
         >
           <Marker coordinate={this.state.region}/>
         </MapView>

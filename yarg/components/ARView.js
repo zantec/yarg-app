@@ -1,11 +1,12 @@
 import React from 'react';
-import { AR, Asset } from 'expo';
+import { AR, Asset, Constants } from 'expo';
 // Let's alias ExpoTHREE.AR as ThreeAR so it doesn't collide with Expo.AR.
 import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 // Let's also import `expo-graphics`
 // expo-graphics manages the setup/teardown of the gl context/ar session, creates a frame-loop, and observes size/orientation changes.
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
+import axios from 'axios';
 
 import TouchableView from '../components/TouchableView';
 
@@ -26,14 +27,31 @@ export default class ARView extends React.Component {
     const intersects = this.raycaster.intersectObjects(this.scene.children);
     for (const intersect of intersects) {
       const { distance, face, faceIndex, object, point, uv } = intersect;
-      this.scene.remove(object);
+      //pass in the tapped object (the X) to function that will handle removing
+      //it and updating database values for user gold/treasure & transactions
+      this.claimTreasureUpdateGold(object);
     }
   };
+
+  claimTreasureUpdateGold = (tappedX) => {
+    //remove X sprite from the scene
+    this.scene.remove(tappedX);
+
+    //send patch request containing username and amount of gold to insert
+    axios.patch(`http://${process.env.SERVER_API}/user/gold`, {
+      username: 'acreed1998',
+      amount: 1000
+    })
+      .then(res => console.log(JSON.stringify(res)))
+      .catch(err => console.error(err))
+    //updates the current gold amount
+    this.props.getGold();
+  }
   
   componentDidMount() {
     // Turn off extra warnings
-    THREE.suppressExpoWarnings(true)
-    ThreeAR.suppressWarnings()
+    THREE.suppressExpoWarnings(true);
+    ThreeAR.suppressWarnings();
   }
 
   render() {
@@ -92,8 +110,9 @@ export default class ARView extends React.Component {
     const spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: '#fff' });
     this.sprite = new THREE.Sprite(spriteMaterial);
     this.sprite.scale.set(1, 1, 1);
+    this.sprite.position.x = -25;
     this.sprite.position.z = -5;
-    this.sprite.position.y = -2;
+    // this.sprite.position.y = -2;
     this.scene.add(this.sprite);
 
 

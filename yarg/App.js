@@ -9,6 +9,7 @@ export default class App extends React.Component {
     isLoadingComplete: false,
     treasures: [],
     riddles: [],
+    goldAmount: 0,
   };
 
   componentDidMount() {
@@ -27,10 +28,30 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
+          <AppNavigator 
+          screenProps={{
+            getGold: this.getGold,
+            goldAmount: this.state.goldAmount
+          }}
+          />
         </View>
       );
     }
+  }
+
+  getGold = () => {
+    axios.get(`http://${process.env.SERVER_API}/user`, {
+      params: {
+        username: 'acreed1998'
+      }
+    })
+      .then((res) => {
+        const gold = res.data.gold;
+        this.setState({
+          goldAmount: gold
+        });
+      })
+      .catch(err => console.error(err))
   }
 
   _loadResourcesAsync = async () => {

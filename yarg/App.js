@@ -2,10 +2,12 @@ import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
+import axios from 'axios';
 
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
+    goldAmount: 0,
   };
 
   render() {
@@ -21,10 +23,30 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
+          <AppNavigator 
+          screenProps={{
+            getGold: this.getGold,
+            goldAmount: this.state.goldAmount
+          }}
+          />
         </View>
       );
     }
+  }
+
+  getGold = () => {
+    axios.get(`http://${process.env.SERVER_API}/user`, {
+      params: {
+        username: 'acreed1998'
+      }
+    })
+      .then((res) => {
+        const gold = res.data.gold;
+        this.setState({
+          goldAmount: gold
+        });
+      })
+      .catch(err => console.error(err))
   }
 
   _loadResourcesAsync = async () => {

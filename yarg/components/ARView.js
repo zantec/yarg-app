@@ -34,15 +34,18 @@ export default class ARView extends React.Component {
   };
 
   claimTreasureUpdateGold = (tappedX) => {
+    //remove X sprite from the scene
     this.scene.remove(tappedX);
-    //         `${Constants.manifest.extra.SERVER_API}/user/gold`
-    //placeholder url so things don't break. need to replace w ^
-    axios.patch('https://reqres.in/api/users?page=2', {
+
+    //send patch request containing username and amount of gold to insert
+    axios.patch(`http://${process.env.SERVER_API}/user/gold`, {
       username: 'acreed1998',
       amount: 1000
     })
-    .then(res => console.log(JSON.stringify(res)))
-    .catch(err => console.error(err))
+      .then(res => console.log(JSON.stringify(res)))
+      .catch(err => console.error(err))
+    //updates the current gold amount
+    this.props.getGold();
   }
   
   componentDidMount() {

@@ -2,9 +2,9 @@
   "devToolsPort": 19002,
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 68252,
+  "packagerPid": 71150,
   "expoServerNgrokUrl": "https://k2-h2a.ryanmccarty.yarg.exp.direct",
   "packagerNgrokUrl": "https://packager.k2-h2a.ryanmccarty.yarg.exp.direct",
-  "ngrokPid": 68272,
+  "ngrokPid": 71170,
   "webpackServerPort": null
 }

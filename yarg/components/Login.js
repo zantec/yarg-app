@@ -14,13 +14,14 @@ export default class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
-      mode: ['Login', 'Signup'],
       success: false,
     };
+    this._submit = this._submit.bind(this);
   }
 
   _submit(event) {
-    if (event.target.innerText === 'Login') {
+    console.log(event);
+    if (event === 'Login') {
       Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/login?username=${this.state.username}&password=${this.state.password}`).then((result) => {
         this.props.screenProps.appLogin(result.data);
         this.setState({
@@ -71,16 +72,20 @@ export default class Login extends React.Component {
             placeholder='password'
             value={this.state.password}
           />
-          <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
+          <TouchableOpacity style={styles.button} onPress={() => { this._submit('Login'); }}>
             <Text style={styles.btntext}>Login</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
+          <TouchableOpacity style={styles.button} onPress={() => { this._submit('Signup') }}>
             <Text style={styles.btntext}>Signup</Text>
           </TouchableOpacity>
         </View>
       );
     } else {
-      <div>Login/Signup Successful</div>
+      return (
+        <View>
+          <Text style={styles.result}>{'Login/Signup Successful'}</Text>
+        </View>
+      );
     }
   }
 }
@@ -117,4 +122,13 @@ var styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  result: {
+    height: 40,
+    width: 150,
+    marginTop: 300,
+    alignSelf: 'center',
+    alignItems: 'center',
+    fontSize: 20,
+    fontWeight: 'bold',
+  }
 })

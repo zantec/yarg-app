@@ -5,6 +5,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import ARScreen from '../screens/ARScreen'
 import MapScreen from '../screens/MapScreen'
+import HomeScreen from '../screens/HomeScreen';
+import LoginScreen from '../components/Login';
 
 
 const ARStack = createStackNavigator({
@@ -34,7 +36,23 @@ MapStack.navigationOptions = {
     />
   ),
 };
+
+const LoginStack = createStackNavigator({
+  Login: LoginScreen,
+});
+
+LoginStack.navigationOptions = {
+  tabBarLabel: 'Login/Signup',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon 
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
+  LoginStack,
   MapStack,
   ARStack,
 });

@@ -9,10 +9,26 @@ export default class App extends React.Component {
     isLoadingComplete: false,
     treasures: [],
     riddles: [],
+    id_user: 0,
+    username: '',
+    avatar: '',
     goldAmount: 0,
+    userTrasures: [],
+    userRiddles: [],
   };
 
   componentDidMount() {
+  };
+
+  appLogin(userObject) {
+    this.setState({
+      id_user: 0,
+      username: userObject.username,
+      avatar: userObject.avatar,
+      goldAmount: userObject.gold,
+      userTrasures: userObject.treasures,
+      userRiddles: userObject.riddles,
+    });
   };
 
   render() {
@@ -31,7 +47,8 @@ export default class App extends React.Component {
           <AppNavigator 
           screenProps={{
             getGold: this.getGold,
-            goldAmount: this.state.goldAmount
+            goldAmount: this.state.goldAmount,
+            appLogin: this.appLogin.bind(this)
           }}
           />
         </View>

@@ -23,21 +23,12 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    },
-    "description": "",
-    "extra": {
-      "DB_DATABASE": "pirates",
-      "DB_HOST": "yarg.c0vz2vyoh6yx.us-east-2.rds.amazonaws.com",
-      "DB_USER": "princezboy",
-      "DB_PASSWORD": "q1w2e3r4t5",
-      "DB_PORT": "3306",
-      "SERVER_API": "ec2-3-17-167-48.us-east-2.compute.amazonaws.com",
-      "RIDDLE_API": "ec2-18-191-183-109.us-east-2.compute.amazonaws.com",
-      "G_PLACES_API": "AIzaSyDg93jy9HrwBiZdJPzP_VsEbU86ZnyNn48",
-      "TOMTOM_API": "zTNi1SK6CSvEMXG0jDhbbVg8c8QAtOLn",
-      "OPENCAGE_API": "fff0c9fd594a41aa9abeb0a5233ceba9"
-    }
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Allow Expo experiences to use your location"
+      }
+  },
+    "description": ""
   },
   "packagerOpts": {
     "assetExts": [

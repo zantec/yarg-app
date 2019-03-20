@@ -25,8 +25,8 @@ export default class Map extends React.Component {
 
   getTreasuresAndRiddles(result) {
     const scope = this;
-    Axios.get(`ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?zipcode=${result.nativeEvent.coordinate.zipcode}`).then((treasuresResult) => {
-      Axios.get(`ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?zipcode=${result.nativeEvent.coordinate.zipcode}`).then((riddlesResult) => {
+    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?zipcode=${result.nativeEvent.coordinate.zipcode}`).then((treasuresResult) => {
+      Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?zipcode=${result.nativeEvent.coordinate.zipcode}`).then((riddlesResult) => {
         scope.setState({
           treasures: treasuresResult.data,
           riddles: riddlesResult,

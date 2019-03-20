@@ -3,31 +3,17 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import ARView from '../components/ARView'
+import ARScreen from '../screens/ARScreen'
 import MapScreen from '../screens/MapScreen'
+<<<<<<< HEAD
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../components/Login';
+=======
+>>>>>>> e62ea511037b3b685c102312b93dcbb08b729c34
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
-});
-
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
-};
 
 const ARStack = createStackNavigator({
-  AR: ARView,
+  AR: ARScreen,
 });
 
 ARStack.navigationOptions = {

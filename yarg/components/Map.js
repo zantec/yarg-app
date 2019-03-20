@@ -18,6 +18,8 @@ export default class Map extends React.Component {
       treasures: [],
       riddles: [],
     }
+    this.onRegionChange = this.onRegionChange.bind(this);
+    this.getTreasuresAndRiddles = this.getTreasuresAndRiddles.bind(this);
   }
 
   onRegionChange(region) {

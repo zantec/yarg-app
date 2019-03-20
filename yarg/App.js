@@ -13,6 +13,8 @@ export default class App extends React.Component {
     username: '',
     avatar: '',
     goldAmount: 0,
+    userTrasures: [],
+    userRiddles: [],
   };
 
   componentDidMount() {
@@ -24,6 +26,8 @@ export default class App extends React.Component {
       username: userObject.username,
       avatar: userObject.avatar,
       goldAmount: userObject.gold,
+      userTrasures: userObject.treasures,
+      userRiddles: userObject.riddles,
     });
   };
 

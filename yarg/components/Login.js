@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text 
 } from 'react-native';
+import Axios from 'axios';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -17,7 +18,11 @@ export default class Login extends React.Component {
   }
 
   _submit() {
-    //do some login stuff
+    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/login?username=${this.state.username}&password=${this.state.password}`).then((result) => {
+      
+    }).catch((err) => {
+      
+    });
   }
 
   render() {

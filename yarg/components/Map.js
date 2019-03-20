@@ -2,6 +2,7 @@ import React from 'react';
 import { MapView } from 'expo';
 import { Marker } from 'react-native-maps';
 import Axios from 'axios';
+import _ from 'lodash';
 
 
 export default class Map extends React.Component {

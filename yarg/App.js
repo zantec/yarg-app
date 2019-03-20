@@ -9,9 +9,20 @@ export default class App extends React.Component {
     isLoadingComplete: false,
     treasures: [],
     riddles: [],
+    id_user: 0,
+    username: '',
+    avatar: '',
   };
 
   componentDidMount() {
+  };
+
+  appLogin(userObject) {
+    this.setState({
+      id_user: 0,
+      username: userObject.username,
+      avatar: userObject.avatar
+    });
   };
 
   render() {
@@ -27,7 +38,9 @@ export default class App extends React.Component {
       return (
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-          <AppNavigator />
+          <AppNavigator 
+            screenProps={}
+          />
         </View>
       );
     }

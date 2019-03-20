@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import ARView from '../components/ARView'
 import MapScreen from '../screens/MapScreen'
 import HomeScreen from '../screens/HomeScreen';
+import LoginScreen from '../components/Login';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -52,7 +53,23 @@ MapStack.navigationOptions = {
     />
   ),
 };
+
+const LoginStack = createStackNavigator({
+  Login: LoginScreen,
+});
+
+LoginStack.navigationOptions = {
+  tabBarLabel: 'Login/Signup',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon 
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
+  LoginStack,
   MapStack,
   ARStack,
 });

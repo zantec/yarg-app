@@ -9,16 +9,16 @@ export default class Gold extends Component {
   };
 
   componentDidMount() {
-    //         ``${Expo.Constants.manifest.extra.SERVER_API}/user`
+    // ``${Expo.Constants.manifest.extra.SERVER_API}/user`
+    // process.env.SERVER_API
     //'https://reqres.in/api/users?page=2'
     //placeholder url so things don't break. need to replace w ^
-    axios.get(`${Expo.Constants.manifest.extra.SERVER_API}/user`, {
+    axios.get(`http://${process.env.SERVER_API}/user`, {
       params: {
         username: 'acreed1998'
       }
     })
     .then((res) => {
-      console.log(res)
       const gold = res.data.gold;
       this.setState({
         amount: gold

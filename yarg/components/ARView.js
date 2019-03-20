@@ -41,7 +41,7 @@ export default class ARView extends React.Component {
       username: 'acreed1998',
       amount: 1000
     })
-    .then(res => console.log(res))
+    .then(res => console.log(JSON.stringify(res)))
     .catch(err => console.error(err))
   }
   
@@ -107,8 +107,9 @@ export default class ARView extends React.Component {
     const spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: '#fff' });
     this.sprite = new THREE.Sprite(spriteMaterial);
     this.sprite.scale.set(1, 1, 1);
+    this.sprite.position.x = -25;
     this.sprite.position.z = -5;
-    this.sprite.position.y = -2;
+    // this.sprite.position.y = -2;
     this.scene.add(this.sprite);
 
 

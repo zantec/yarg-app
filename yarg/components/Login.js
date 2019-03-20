@@ -13,16 +13,33 @@ export default class Login extends React.Component {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      mode: ['Login', 'Signup'],
+      success: false,
     };
   }
 
-  _submit() {
-    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/login?username=${this.state.username}&password=${this.state.password}`).then((result) => {
-      
-    }).catch((err) => {
-      
-    });
+  _submit(event) {
+    if (event.target.innerText === 'Login') {
+      Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/login?username=${this.state.username}&password=${this.state.password}`).then((result) => {
+        this.props.screenProps.appLogin(result.data);
+      }).catch((err) => {
+
+      });
+    } else {
+      Axios({
+        method: 'post',
+        url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/signup',
+        data: {
+          username: this.state.username,
+          password: this.state.password,
+        },
+      }).then((result) => {
+        this.props.screenProps.appLogin(result.data);
+      }).catch((err) => {
+        
+      });
+    }
   }
 
   render() {
@@ -43,6 +60,9 @@ export default class Login extends React.Component {
         />
         <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
           <Text style={styles.btntext}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => { this._submit(); }}>
+          <Text style={styles.btntext}>Signup</Text>
         </TouchableOpacity>
       </View>
     );

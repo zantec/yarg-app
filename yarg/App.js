@@ -9,13 +9,10 @@ export default class App extends React.Component {
     isLoadingComplete: false,
     treasures: [],
     riddles: [],
-<<<<<<< HEAD
     id_user: 0,
     username: '',
     avatar: '',
-=======
     goldAmount: 0,
->>>>>>> e62ea511037b3b685c102312b93dcbb08b729c34
   };
 
   componentDidMount() {
@@ -25,7 +22,8 @@ export default class App extends React.Component {
     this.setState({
       id_user: 0,
       username: userObject.username,
-      avatar: userObject.avatar
+      avatar: userObject.avatar,
+      goldAmount: userObject.gold,
     });
   };
 
@@ -43,14 +41,11 @@ export default class App extends React.Component {
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator 
-<<<<<<< HEAD
-            screenProps={}
-=======
           screenProps={{
             getGold: this.getGold,
-            goldAmount: this.state.goldAmount
+            goldAmount: this.state.goldAmount,
+            appLogin: this.appLogin.bind(this)
           }}
->>>>>>> e62ea511037b3b685c102312b93dcbb08b729c34
           />
         </View>
       );

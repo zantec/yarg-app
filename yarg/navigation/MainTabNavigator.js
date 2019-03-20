@@ -5,11 +5,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import ARScreen from '../screens/ARScreen'
 import MapScreen from '../screens/MapScreen'
-<<<<<<< HEAD
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../components/Login';
-=======
->>>>>>> e62ea511037b3b685c102312b93dcbb08b729c34
 
 
 const ARStack = createStackNavigator({

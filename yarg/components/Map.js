@@ -13,12 +13,16 @@ export default class Map extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
+      treasures: [],
+      riddles: [],
     }
   }
 
   onRegionChange(region) {
     this.setState({ region });
   }
+
+
 
   render() {
     return (
@@ -28,6 +32,7 @@ export default class Map extends React.Component {
           onRegionChange={this.onRegionChange}
           showsUserLocation={true}
           showsMyLocationButton={true}
+          onUserLocationChange={}
         >
           <Marker coordinate={this.state.region}/>
         </MapView>

@@ -24,7 +24,11 @@ export default class MapScreen extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <Map />
+        <Map 
+        treasures={this.props.screenProps.treasures}
+        riddles={this.props.screenProps.riddles}
+        locate={this.props.screenProps.locate}
+        />
         <RiddleModal/>
         <NavigationEvents
           onWillFocus={() => {

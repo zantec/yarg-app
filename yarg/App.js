@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { AppLoading, Asset, Font, Icon } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
+import _ from 'lodash';
 
 export default class App extends React.Component {
   state = {
@@ -18,6 +19,7 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
+    this.locate();
   };
 
   appLogin(userObject) {
@@ -48,7 +50,10 @@ export default class App extends React.Component {
           screenProps={{
             getGold: this.getGold,
             goldAmount: this.state.goldAmount,
-            appLogin: this.appLogin.bind(this)
+            appLogin: this.appLogin.bind(this),
+            locate: this.locate.bind(this),
+            treasures: this.state.treasures,
+            riddles: this.state.riddles
           }}
           />
         </View>
@@ -69,6 +74,29 @@ export default class App extends React.Component {
         });
       })
       .catch(err => console.error(err))
+  }
+
+  locate() {
+    navigator.geolocation.getCurrentPosition(position => {
+      axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fff0c9fd594a41aa9abeb0a5233ceba9`).then(result => {
+        const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
+        axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((treasuresResult) => {
+          axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((riddlesResult) => {
+            this.setState({
+              treasures: treasuresResult.data,
+              riddles: riddlesResult.data
+            });
+          }).catch((err) => {
+            console.log(err)
+          });
+        }).catch((err) => {
+          console.log(err)
+        });
+      });
+    }, (err) => {
+      console.log(err);
+    }, { enableHighAccuracy: true, timeout: 20000, });
+    setTimeout(this.locate, 18000000);
   }
 
   _loadResourcesAsync = async () => {

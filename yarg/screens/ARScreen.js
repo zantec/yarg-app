@@ -18,7 +18,11 @@ export default class ARScreen extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <ARView getGold={this.props.screenProps.getGold}/>
+        <ARView 
+        getGold={this.props.screenProps.getGold}
+        treasures={this.props.screenProps.treasures}
+        riddles={this.props.screenProps.riddles}
+        />
         <Gold goldAmount={this.props.screenProps.goldAmount} />
       </View>
     );

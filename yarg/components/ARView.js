@@ -6,6 +6,7 @@ import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 // expo-graphics manages the setup/teardown of the gl context/ar session, creates a frame-loop, and observes size/orientation changes.
 // it also provides debug information with `isArCameraStateEnabled`
 import { View as GraphicsView } from 'expo-graphics';
+import { Vibration } from 'react-native';
 import axios from 'axios';
 
 import TouchableView from '../components/TouchableView';
@@ -46,12 +47,15 @@ export default class ARView extends React.Component {
       .catch(err => console.error(err))
     //updates the current gold amount
     this.props.getGold();
+    Vibration.vibrate();
   }
   
   componentDidMount() {
     // Turn off extra warnings
     THREE.suppressExpoWarnings(true);
     ThreeAR.suppressWarnings();
+    console.log(this.props.treasures);
+    console.log()
   }
 
   render() {

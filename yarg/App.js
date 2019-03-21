@@ -20,7 +20,10 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
-    this._getLocationAsync();
+    this._getLocationAsync()
+      .then(() => this.locate())
+      .catch((err) => console.error(err))
+    ;
   };
 
   appLogin(userObject) {
@@ -87,8 +90,6 @@ export default class App extends React.Component {
         const zipcode = '70115'
         axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((treasuresResult) => {
           axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((riddlesResult) => {
-          console.log(riddlesResult.data);
-          console.log(treasuresResult.data);
           this.setState({
               treasures: treasuresResult.data,
               riddles: riddlesResult.data
@@ -113,8 +114,6 @@ export default class App extends React.Component {
 
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ userLocation: location });
-    console.log(this.state.userLocation)
-    this.locate();
   };
 
   _loadResourcesAsync = async () => {

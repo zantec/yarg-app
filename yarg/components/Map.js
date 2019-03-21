@@ -43,7 +43,7 @@ export default class Map extends React.Component {
     }, (err) => {
       console.log(err);
     }, { enableHighAccuracy: true, timeout: 20000, });
-    setTimeout(this.locate, 30000);
+    setTimeout(this.locate, 3000000);
   }
 
   onRegionChange(region) {

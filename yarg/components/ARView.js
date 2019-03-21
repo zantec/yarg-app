@@ -15,6 +15,20 @@ export default class ARView extends React.Component {
   touch = new THREE.Vector2();
   raycaster = new THREE.Raycaster();
 
+  componentDidMount() {
+    // Turn off extra warnings
+    THREE.suppressExpoWarnings(true);
+    ThreeAR.suppressWarnings();
+    this._interval = setInterval(this.props.getLocation, 5000);
+
+    console.log(this.props.treasures);
+    console.log(this.props.riddles)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._interval);
+  }
+
   updateTouch = ({ x, y }) => {
     const { width, height } = this.scene.size;
     this.touch.x = x / width * 2 - 1;
@@ -48,14 +62,6 @@ export default class ARView extends React.Component {
     //updates the current gold amount
     this.props.getGold();
     Vibration.vibrate();
-  }
-  
-  componentDidMount() {
-    // Turn off extra warnings
-    THREE.suppressExpoWarnings(true);
-    ThreeAR.suppressWarnings();
-    console.log(this.props.treasures);
-    console.log()
   }
 
   render() {

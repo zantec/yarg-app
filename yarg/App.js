@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
-import { AppLoading, Asset, Font, Icon } from 'expo';
+import { AppLoading, Asset, Font, Icon, Location, Permissions } from 'expo';
 import AppNavigator from './navigation/AppNavigator';
 import _ from 'lodash';
 
@@ -16,10 +16,12 @@ export default class App extends React.Component {
     goldAmount: 0,
     userTrasures: [],
     userRiddles: [],
+    userPosition: null,
   };
 
   componentDidMount() {
     this.locate();
+    this._getLocationAsync();
   };
 
   appLogin(userObject) {
@@ -53,7 +55,9 @@ export default class App extends React.Component {
             appLogin: this.appLogin.bind(this),
             locate: this.locate.bind(this),
             treasures: this.state.treasures,
-            riddles: this.state.riddles
+            riddles: this.state.riddles,
+            getLocation: this._getLocationAsync.bind(this),
+            userLocation: this.state.userLocation,
           }}
           />
         </View>
@@ -78,6 +82,7 @@ export default class App extends React.Component {
 
   locate() {
     navigator.geolocation.getCurrentPosition(position => {
+      this.setState({})
       axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fff0c9fd594a41aa9abeb0a5233ceba9`).then(result => {
         const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
         axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((treasuresResult) => {
@@ -98,6 +103,18 @@ export default class App extends React.Component {
     }, { enableHighAccuracy: true, timeout: 20000, });
     setTimeout(this.locate, 18000000);
   }
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ userLocation: JSON.stringify(location) });
+  };
 
   _loadResourcesAsync = async () => {
     return Promise.all([

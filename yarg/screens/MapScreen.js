@@ -29,7 +29,7 @@ export default class MapScreen extends React.Component {
         riddles={this.props.screenProps.riddles}
         locate={this.props.screenProps.locate}
         />
-        <RiddleModal/>
+        <RiddleModal riddles={this.props.screenProps.riddles}/>
         <NavigationEvents
           onWillFocus={() => {
             this.props.screenProps.getGold();

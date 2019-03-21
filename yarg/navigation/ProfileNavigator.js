@@ -1,16 +1,19 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
+import Inventory from "../components/profile/Inventory.js";
+import Stats from "../components/profile/Stats.js";
+import RiddlesTreasures from "../components/profile/RiddlesTreasures.js";
 
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+const StatsStack = createStackNavigator({
+  Stats: Stats,
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+StatsStack.navigationOptions = {
+  tabBarLabel: 'Stats',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -23,12 +26,12 @@ HomeStack.navigationOptions = {
   ),
 };
 
-const ARStack = createStackNavigator({
-  AR: ARView,
+const InventoryStack = createStackNavigator({
+  Inventory: Inventory,
 });
 
-ARStack.navigationOptions = {
-  tabBarLabel: 'AR',
+InventoryStack.navigationOptions = {
+  tabBarLabel: 'Inventory',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -37,12 +40,12 @@ ARStack.navigationOptions = {
   ),
 };
 
-const MapStack = createStackNavigator({
-  Map: Map,
+const RiddlesTreasuresStack = createStackNavigator({
+  RiddlesTreasures: RiddlesTreasures,
 });
 
-MapStack.navigationOptions = {
-  tabBarLabel: 'Map',
+RiddlesTreasuresStack.navigationOptions = {
+  tabBarLabel: 'Riddles/Treasures',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -50,8 +53,13 @@ MapStack.navigationOptions = {
     />
   ),
 };
-export default createBottomTabNavigator({
-  MapStack,
-  HomeStack,
-  ARStack,
-});
+export default createMaterialTopTabNavigator(
+  {
+    RiddlesTreasuresStack,
+    StatsStack,
+    InventoryStack,
+  },
+  {
+    initialRouteName: 'StatsStack'
+  }
+);

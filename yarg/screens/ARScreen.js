@@ -2,6 +2,7 @@ import React from 'react';
 import {
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 import NavigationEvents from 'react-navigation';
 
@@ -18,8 +19,15 @@ export default class ARScreen extends React.Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <ARView getGold={this.props.screenProps.getGold}/>
+        <ARView 
+        getGold={this.props.screenProps.getGold}
+        treasures={this.props.screenProps.treasures}
+        riddles={this.props.screenProps.riddles}
+        getLocation={this.props.screenProps.getLocation}
+        userLocation={this.props.screenProps.userLocation}
+        />
         <Gold goldAmount={this.props.screenProps.goldAmount} />
+        <Text>{this.props.screenProps.userLocation}</Text>
       </View>
     );
   }

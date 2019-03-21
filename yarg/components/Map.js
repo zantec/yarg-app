@@ -27,8 +27,8 @@ export default class Map extends React.Component {
     navigator.geolocation.getCurrentPosition(position => {
       Axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fff0c9fd594a41aa9abeb0a5233ceba9`).then(result => {
         const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
-        Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?zipcode=${zipcode}`).then((treasuresResult) => {
-          Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?zipcode=${zipcode}`).then((riddlesResult) => {
+        Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.props.screenProps.username}&zipcode=${zipcode}`).then((treasuresResult) => {
+          Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.props.screenProps.username}&zipcode=${zipcode}`).then((riddlesResult) => {
             scope.setState({
               treasures: treasuresResult.data,
               riddles: riddlesResult.data
@@ -60,7 +60,6 @@ export default class Map extends React.Component {
         onMapReady={this.locate}
         showsUserLocation={true}
         showsMyLocationButton={true}
-        onUserLocationChange={(some) => { this.getTreasuresAndRiddles(some) }}
       >
         <Marker coordinate={this.state.region} />
       </MapView>

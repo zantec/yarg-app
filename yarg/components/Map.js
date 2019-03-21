@@ -4,7 +4,6 @@ import { Marker } from 'react-native-maps';
 import Axios from 'axios';
 import _ from 'lodash';
 
-
 export default class Map extends React.Component {
   constructor(props) {
     super(props);
@@ -20,40 +19,50 @@ export default class Map extends React.Component {
     }
     this.onRegionChange = this.onRegionChange.bind(this);
     this.getTreasuresAndRiddles = this.getTreasuresAndRiddles.bind(this);
+    this.locate = this.locate.bind(this);
+  }
+
+  locate() {
+    const scope = this;
+    navigator.geolocation.getCurrentPosition(position => {
+      Axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fff0c9fd594a41aa9abeb0a5233ceba9`).then(result => {
+        const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
+        Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.props.screenProps.username}&zipcode=${zipcode}`).then((treasuresResult) => {
+          Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.props.screenProps.username}&zipcode=${zipcode}`).then((riddlesResult) => {
+            scope.setState({
+              treasures: treasuresResult.data,
+              riddles: riddlesResult.data
+            });
+          }).catch((err) => {
+            console.log(err)
+          });
+        }).catch((err) => {
+          console.log(err)
+        });
+      });
+    }, (err) => {
+      console.log(err);
+    }, { enableHighAccuracy: true, timeout: 20000, });
+    setTimeout(this.locate, 3000000);
   }
 
   onRegionChange(region) {
     this.setState({ region });
   }
 
-  getTreasuresAndRiddles(result) {
-    const scope = this;
-    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?zipcode=${result.nativeEvent.coordinate.zipcode}`).then((treasuresResult) => {
-      Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?zipcode=${result.nativeEvent.coordinate.zipcode}`).then((riddlesResult) => {
-        scope.setState({
-          treasures: treasuresResult.data,
-          riddles: riddlesResult.data,
-        });
-      }).catch((err) => {
-
-      });
-    }).catch((err) => {
-      
-    });
-  }
-
   render() {
     return (
-        <MapView
-          style={{ flex: 1 }}
-          initialRegion={this.state.region}
-          onRegionChange={this.onRegionChange}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-          onUserLocationChange={this.getTreasuresAndRiddles}
-        >
-          <Marker coordinate={this.state.region}/>
-        </MapView>
+      <MapView
+        style={{ flex: 1 }}
+        showsCompass={true}
+        initialRegion={this.state.region}
+        onRegionChange={this.onRegionChange}
+        onMapReady={this.locate}
+        showsUserLocation={true}
+        showsMyLocationButton={true}
+      >
+        <Marker coordinate={this.state.region} />
+      </MapView>
     );
   }
 }

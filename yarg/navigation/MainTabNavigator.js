@@ -56,7 +56,7 @@ const ProfileStack = createStackNavigator({
 });
 
 ProfileStack.navigationOptions = {
-  tabBarLabel: 'AR',
+  tabBarLabel: 'Profile',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}

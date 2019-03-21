@@ -5,7 +5,6 @@ import { Marker } from 'react-native-maps';
 import { Button } from 'react-native-elements';
 import Axios from 'axios';
 import _ from 'lodash';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Overlay from 'react-native-modal-overlay';
 
 export default class Map extends React.Component {
@@ -21,7 +20,6 @@ export default class Map extends React.Component {
       treasures: [],
       modalVisible: false,
     }
-    this.locate = this.locate.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onOpen = this.onOpen.bind(this);
   }

@@ -27,7 +27,6 @@ export default class ARScreen extends React.Component {
         userLocation={this.props.screenProps.userLocation}
         />
         <Gold goldAmount={this.props.screenProps.goldAmount} />
-        <Text>{this.props.screenProps.userLocation}</Text>
       </View>
     );
   }

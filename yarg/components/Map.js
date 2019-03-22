@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { MapView } from 'expo';
-import { View, Text } from 'react-native';
+import { MapView, AppLoading, Asset, Font, Icon, Location, Permissions } from 'expo';
+import { StyleSheet, View, Text, Picker, TextInput } from "react-native";
 import { Marker } from 'react-native-maps';
 import { Button } from 'react-native-elements';
 import Axios from 'axios';
 import _ from 'lodash';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Overlay from 'react-native-modal-overlay';
+import Slider from "react-native-slider";
 
 export default class Map extends React.Component {
   constructor(props) {
@@ -20,10 +20,17 @@ export default class Map extends React.Component {
       },
       treasures: [],
       modalVisible: false,
+      value: 500,
+      toggle: 'Treasure',
+      text: 'ENTER RIDDLE HERE',
+      riddleTitle: 'A Title',
+      userLocation: '',
+      userTreasure: 0,
     }
-    this.locate = this.locate.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onOpen = this.onOpen.bind(this);
+    this.store = this.store.bind(this);
+    this._getLocationAsync = this._getLocationAsync.bind(this);
   }
 
   onOpen() {
@@ -34,6 +41,84 @@ export default class Map extends React.Component {
     this.setState({ modalVisible: false });
   }
 
+  store = () => {
+    const scope = this.state;
+    this._getLocationAsync().then((coords) => {
+      if (scope.toggle === 'Treasure') {
+        Axios({
+          method: 'get',
+          url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
+        }).then(locationData => {
+          const address = locationData.data.Response.View[0].Result[0].Location.Address
+          console.log(address);
+          Axios({
+            method: 'post',
+            url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/treasures',
+            data: {
+              gold_value: scope.value,
+              longitude: coords.longitude,
+              latitude: coords.latitude,
+              address: `${address.HouseNumber} ${address.Street}`,
+              city: address.City,
+              state: address.State,
+              zipcode: address.PostalCode,
+              id_user: '2',
+            }
+          }).then(result => {
+            console.log(result.data);
+          }).catch(err => {
+            console.log(err);
+          });
+        }).catch(err => {
+          console.log(err);
+        });
+      } else if (scope.toggle === 'Riddle') {
+        Axios({
+          method: 'get',
+          url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
+        }).then(locationData => {
+          const address = locationData.data.Response.View[0].Result[0].Location.Address
+          console.log(address);
+          Axios({
+            method: 'post',
+            url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/riddles',
+            data: {
+              longitude: coords.longitude,
+              latitude: coords.latitude,
+              address: `${address.HouseNumber} ${address.Street}`,
+              city: address.City,
+              state: address.State,
+              zipcode: address.PostalCode,
+              id_user: '2',
+              riddle: scope.text,
+              title: scope.riddleTitle,
+              id_treasure: scope.userTreasure,
+            }
+          }).then(result => {
+            console.log(result.data);
+          }).catch(err => {
+            console.log(err);
+          });
+        }).catch(err => {
+          console.log(err);
+        });
+      }
+    }).catch(err => {
+      console.log(err);
+    });
+  };
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== 'granted') {
+      this.setState({
+        errorMessage: 'Permission to access location was denied',
+      });
+    }
+    let location = await Location.getCurrentPositionAsync({});
+    return location.coords;
+  };
+  
   render() {
     return (
       <View style={{ flex: 1 }}>

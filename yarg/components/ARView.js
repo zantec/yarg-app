@@ -12,22 +12,22 @@ import axios from 'axios';
 import TouchableView from '../components/TouchableView';
 
 export default class ARView extends React.Component {
-  touch = new THREE.Vector2();
-  raycaster = new THREE.Raycaster();
-
+  
   componentDidMount() {
     // Turn off extra warnings
     THREE.suppressExpoWarnings(true);
     ThreeAR.suppressWarnings();
-    this._interval = setInterval(this.props.getLocation, 5000);
-
-    console.log(this.props.treasures);
-    console.log(this.props.riddles)
+    console.log(this.props.treasures, 'didmount');
   }
 
-  componentWillUnmount() {
-    clearInterval(this._interval);
+  componentDidUpdate() {
+    console.log(typeof this.props.userCoords[0]);
   }
+
+
+  // ##Enable and handle touch## //
+  touch = new THREE.Vector2();
+  raycaster = new THREE.Raycaster();
 
   updateTouch = ({ x, y }) => {
     const { width, height } = this.scene.size;
@@ -51,7 +51,6 @@ export default class ARView extends React.Component {
   claimTreasureUpdateGold = (tappedX) => {
     //remove X sprite from the scene
     this.scene.remove(tappedX);
-
     //send patch request containing username and amount of gold to insert
     axios.patch(`http://${process.env.SERVER_API}/user/gold`, {
       username: 'acreed1998',
@@ -64,32 +63,41 @@ export default class ARView extends React.Component {
     Vibration.vibrate();
   }
 
-  render() {
-    // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
-    // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
-    // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
-    // `arTrackingConfiguration` denotes which camera the AR Session will use. 
-    // World for rear, Face for front (iPhone X only)
-    return (
-      <TouchableView
-        style={{ flex: 1 }}
-        onTouchesBegan={({ locationX, locationY }) =>
-          this.updateTouch({ x: locationX, y: locationY })}
-        onTouchesMoved={({ locationX, locationY }) =>
-          this.updateTouch({ x: locationX, y: locationY })}
-      >
-        <GraphicsView
-          style={{ flex: 1 }}
-          onContextCreate={this.onContextCreate}
-          onRender={this.onRender}
-          onResize={this.onResize}
-          isArEnabled
-          isArCameraStateEnabled
-          arTrackingConfiguration={AR.TrackingConfiguration.World}
-        />
-      </TouchableView>
+  // ##Get distance between user and extant treasures## //
+  getTreasureCoords = () => {
+    return this.props.treasures.map(treasure => 
+      [treasure.location_data.longitude, treasure.location_data.latitude]
     );
   }
+
+  haversineDistance = (coords1, coords2, isMiles) => {
+    function toRad(x) {
+      return x * Math.PI / 180;
+    }
+
+    const lon1 = coords1[0];
+    const lat1 = coords1[1];
+
+    const lon2 = coords2[0];
+    const lat2 = coords2[1];
+
+    const R = 6371; // km
+
+    const x1 = lat2 - lat1;
+    const dLat = toRad(x1);
+    const x2 = lon2 - lon1;
+    const dLon = toRad(x2)
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
+
+    if (isMiles) d /= 1.60934;
+
+    return d;
+  }
+
 
   // When our context is built we can start coding 3D things.
   onContextCreate = async ({ gl, scale: pixelRatio, width, height }) => {
@@ -154,4 +162,31 @@ export default class ARView extends React.Component {
     // Finally render the scene with the AR Camera
     this.renderer.render(this.scene, this.camera);
   };
+
+  render() {
+    // You need to add the `isArEnabled` & `arTrackingConfiguration` props.
+    // `isArRunningStateEnabled` Will show us the play/pause button in the corner.
+    // `isArCameraStateEnabled` Will render the camera tracking information on the screen.
+    // `arTrackingConfiguration` denotes which camera the AR Session will use. 
+    // World for rear, Face for front (iPhone X only)
+    return (
+      <TouchableView
+        style={{ flex: 1 }}
+        onTouchesBegan={({ locationX, locationY }) =>
+          this.updateTouch({ x: locationX, y: locationY })}
+        onTouchesMoved={({ locationX, locationY }) =>
+          this.updateTouch({ x: locationX, y: locationY })}
+      >
+        <GraphicsView
+          style={{ flex: 1 }}
+          onContextCreate={this.onContextCreate}
+          onRender={this.onRender}
+          onResize={this.onResize}
+          isArEnabled
+          isArCameraStateEnabled
+          arTrackingConfiguration={AR.TrackingConfiguration.World}
+        />
+      </TouchableView>
+    );
+  }
 }

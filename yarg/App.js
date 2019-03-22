@@ -23,7 +23,6 @@ export default class App extends React.Component {
     this._getLocationAsync()
       .then(() => this.locate())
       .catch((err) => console.error(err))
-    ;
   };
 
   appLogin(userObject) {
@@ -86,13 +85,12 @@ export default class App extends React.Component {
       const lat = this.state.userLocation.coords.latitude
       const long = this.state.userLocation.coords.longitude
       axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${long}&key=817c561c66854ebeb245cf60f1c9d598`).then(result => {
-        // const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
-        const zipcode = '70115'
+        const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
         axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((treasuresResult) => {
           axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((riddlesResult) => {
           this.setState({
               treasures: treasuresResult.data,
-              riddles: riddlesResult.data
+              riddles: riddlesResult.data,
             });
           }).catch((err) => {
             console.log(err)

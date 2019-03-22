@@ -11,17 +11,19 @@ export default class App extends React.Component {
     treasures: [],
     riddles: [],
     id_user: 0,
-    username: '',
+    username: 'ryan',
     avatar: '',
     goldAmount: 0,
     userTrasures: [],
     userRiddles: [],
-    userPosition: null,
+    userLocation: null,
   };
 
   componentDidMount() {
-    this.locate();
-    this._getLocationAsync();
+    this._getLocationAsync()
+      .then(() => this.locate())
+      .catch((err) => console.error(err))
+    ;
   };
 
   appLogin(userObject) {
@@ -80,14 +82,15 @@ export default class App extends React.Component {
       .catch(err => console.error(err))
   }
 
-  locate() {
-    navigator.geolocation.getCurrentPosition(position => {
-      this.setState({})
-      axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fff0c9fd594a41aa9abeb0a5233ceba9`).then(result => {
-        const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
+  locate = () => {
+      const lat = this.state.userLocation.coords.latitude
+      const long = this.state.userLocation.coords.longitude
+      axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${long}&key=817c561c66854ebeb245cf60f1c9d598`).then(result => {
+        // const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
+        const zipcode = '70115'
         axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((treasuresResult) => {
           axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((riddlesResult) => {
-            this.setState({
+          this.setState({
               treasures: treasuresResult.data,
               riddles: riddlesResult.data
             });
@@ -98,9 +101,6 @@ export default class App extends React.Component {
           console.log(err)
         });
       });
-    }, (err) => {
-      console.log(err);
-    }, { enableHighAccuracy: true, timeout: 20000, });
     setTimeout(this.locate, 18000000);
   }
 
@@ -113,7 +113,7 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ userLocation: JSON.stringify(location) });
+    this.setState({ userLocation: location });
   };
 
   _loadResourcesAsync = async () => {

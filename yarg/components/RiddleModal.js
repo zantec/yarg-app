@@ -7,8 +7,8 @@ export default class RiddleModal extends Component {
     showRiddleBoard: false,
   };
 
-  setModalVisible(visible) {
-    this.setState({modalVisible: visible});
+  toggleModal() {
+    this.setState({modalVisible: !this.state.modalVisible});
   }
 
   toggleRiddleBoard() {
@@ -26,26 +26,59 @@ export default class RiddleModal extends Component {
         >
           <View style={{marginTop: 22}}>
             <View>
+              <Text>
+                Starting at McHardy's Chicken & Fixin'
+Head forward toward the corner of Broad Street and Bayou Road
+Turn right at the corner of Broad Street and Bayou Road
+Your destination is on the left.
+Starting at Southern Rep Theatre
+Head forward toward the corner of Broad Street and Bayou Road
+Turn right at the corner of Broad Street and Bayou Road
+Head forward and your destination is on the right.
+Starting at Primary Eye Care
+Head forward toward the corner of Broad Street and Columbus Street
+Turn left at the corner of Broad Street and Columbus Street
+Head forward and your destination is on the left.
+              </Text>
+
               <TouchableHighlight
                 onPress={() => {
+                  this.toggleModal();
+                }}>
+                <Text>
+                  Hide Riddle
+                </Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                onPress={() => {
+                  this.toggleModal();
                   this.toggleRiddleBoard();
                 }}>
                 <Text>
                   See local riddles!
                 </Text>
               </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+        
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.showRiddleBoard}
+          onRequestClose={() => { Alert.alert('Modal has been closed.') }}
+        >
+          <View style={{ marginTop: 22 }}>
+            <View>
               <Text>
-                10 paces past the chalkboard.
-                Steer yourself towards the projector.
-                Open yARg and seek the X.
+                {this.props.riddles}
               </Text>
-
               <TouchableHighlight
                 onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
+                  this.toggleRiddleBoard();
                 }}>
                 <Text>
-                  Hide Riddle
+                  Back to the map!
                 </Text>
               </TouchableHighlight>
             </View>
@@ -54,7 +87,7 @@ export default class RiddleModal extends Component {
 
         <TouchableHighlight
           onPress={() => {
-            this.setModalVisible(true);
+            this.toggleModal();
           }}>
           <Text>View me riddle</Text>
         </TouchableHighlight>

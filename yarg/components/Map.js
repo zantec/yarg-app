@@ -81,6 +81,36 @@ export default class Map extends React.Component {
         }).catch(err => {
           console.log(err);
         });
+      } else if (scope.toggle === 'Riddle' && scope.switchValue === true) {
+        Axios({
+          method: 'get',
+          url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
+        }).then(locationData => {
+          const address = locationData.data.Response.View[0].Result[0].Location.Address
+          console.log(address);
+          Axios({
+            method: 'post',
+            url: 'ec2-18-191-183-109.us-east-2.compute.amazonaws.com/api/user/riddles',
+            data: {
+              longitude: coords.longitude,
+              latitude: coords.latitude,
+              address: `${address.HouseNumber} ${address.Street}`,
+              city: address.City,
+              state: address.State,
+              zipcode: address.PostalCode,
+              id_user: '2',
+              riddle: scope.text,
+              title: scope.riddleTitle,
+              id_treasure: scope.userTreasure,
+            }
+          }).then(result => {
+            console.log(result.data);
+          }).catch(err => {
+            console.log(err);
+          });
+        }).catch(err => {
+          console.log(err);
+        });
       } else if (scope.toggle === 'Riddle') {
         Axios({
           method: 'get',
@@ -217,35 +247,5 @@ export default class Map extends React.Component {
         </View>
       </View>
     );
-    // return (
-    //   <View style={{ flex: 1 }}>
-    //     <MapView
-    //       showsCompass={true}
-    //       initialRegion={this.state.region}
-    //       onRegionChange={this.onRegionChange}
-    //       onMapReady={this.props.locate}
-    //       showsUserLocation={true}
-    //       showsMyLocationButton={true}
-    //       style={{ flex: 1 }}
-    //     />
-    //     <View
-    //       style={{
-    //         position: 'absolute',//use absolute position to show button on top of the map
-    //         top: '90%', //for center align
-    //         left: '53%',
-    //         alignSelf: 'flex-end' //for align to right
-    //       }}
-    //     >
-    //       <Button
-    //         title={'Add Treasure/Riddle'}
-    //         onPress={() => { this.onOpen() }}
-    //       >
-    //       </Button>
-    //       <Overlay visible={this.state.modalVisible} onClose={this.onClose} closeOnTouchOutside>
-    //         <Text>Some Modal Content</Text>
-    //       </Overlay>
-    //     </View>
-    //   </View>
-    // );
   }
 }

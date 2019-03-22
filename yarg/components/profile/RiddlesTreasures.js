@@ -20,7 +20,7 @@ export default class RiddlesTreasures extends Component {
                 {_.find(this.props.riddles, riddle => riddle.id_treasure === treasure.id) ?
                   <View>
                     <Text>Riddle: {_.find(this.props.riddles, riddle => riddle.id_treasure === treasure.id).id}</Text>
-                    <Text>Text: {_.find(this.props.riddles, riddle => riddle.id_treasure === treasure.id).riddle}</Text>
+                    <Text>Views: {_.find(this.props.riddles, riddle => riddle.id_treasure === treasure.id).views}</Text>
                   </View>
                   :
                   <Text />

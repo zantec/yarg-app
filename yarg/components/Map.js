@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MapView, AppLoading, Asset, Font, Icon, Location, Permissions } from 'expo';
-import { StyleSheet, View, Text, Picker, TextInput } from "react-native";
+import { StyleSheet, View, Text, Picker, TextInput, Switch } from "react-native";
 import { Marker } from 'react-native-maps';
 import { Button } from 'react-native-elements';
 import Axios from 'axios';
@@ -18,6 +18,14 @@ export default class Map extends React.Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
+      boardLocation: {
+        latitude: 0,
+        longitude: 0,
+        address: null,
+        city: null,
+        state: null,
+        zipcode: 0,
+      },
       treasures: [],
       modalVisible: false,
       value: 500,
@@ -26,6 +34,7 @@ export default class Map extends React.Component {
       riddleTitle: 'A Title',
       userLocation: '',
       userTreasure: 0,
+      switchValue: false,
     }
     this.onClose = this.onClose.bind(this);
     this.onOpen = this.onOpen.bind(this);
@@ -149,7 +158,7 @@ export default class Map extends React.Component {
               {this.state.toggle === 'Riddle' ?
                 <View>
                   <Text>
-                    Choose Riddle Id:
+                    Choose Treasure Id:
                 </Text>
                   <Picker
                     selectedValue={this.state.userTreasure}
@@ -161,6 +170,14 @@ export default class Map extends React.Component {
                     <Picker.Item label="7" value="7" />
                     <Picker.Item label="8" value="8" />
                   </Picker>
+                  <View>
+                    <Text>
+                      Procedural Generate:
+                  </Text>
+                    <Switch
+                      onValueChange={() => { this.setState({ switchValue: !this.state.switchValue }) }}
+                      value={this.state.switchValue} />
+                  </View>
                 </View>
                 : <Text />}
               <Text>

@@ -145,24 +145,90 @@ export default class Map extends React.Component {
           >
           </Button>
           <Overlay visible={this.state.modalVisible} onClose={this.onClose} closeOnTouchOutside>
-            <Text>Some Modal Content</Text>
+            <View style={styles.container}>
+              {this.state.toggle === 'Riddle' ?
+                <View>
+                  <Text>
+                    Choose Riddle Id:
+                </Text>
+                  <Picker
+                    selectedValue={this.state.userTreasure}
+                    mode={'dropdown'}
+                    style={{ height: 50, width: 100 }}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.setState({ userTreasure: itemValue })
+                    }>
+                    <Picker.Item label="7" value="7" />
+                    <Picker.Item label="8" value="8" />
+                  </Picker>
+                </View>
+                : <Text />}
+              <Text>
+                Add {this.state.toggle}:
+              </Text>
+              {this.state.toggle === 'Treasure' ?
+                <View>
+                  <Slider
+                    minimumValue={500}
+                    maximumValue={5000}
+                    value={this.state.value}
+                    onValueChange={value => this.setState({ value })}
+                  />
+                  <Text>
+                    Value: {Math.floor(this.state.value)}
+                  </Text>
+                </View>
+                :
+                <TextInput
+                  editable={true}
+                  maxLength={1000}
+                  value={this.state.text}
+                  onFocus={() => {
+                    if (this.state.text === 'ENTER RIDDLE HERE') {
+                      this.setState({ text: '' });
+                    }
+                  }}
+                  onChangeText={(text) => { this.setState({ text }) }}
+                />
+              }
+              <View style={styles.flex}>
+                <Button buttonStyle={styles.button} title={`Add ${this.state.toggle}`} onPress={() => { this.store() }} />
+                <Button buttonStyle={styles.button} title={`${this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure'}`} onPress={() => { this.setState({ toggle: this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure' }) }} />
+              </View>
+            </View>
           </Overlay>
         </View>
       </View>
     );
+    // return (
+    //   <View style={{ flex: 1 }}>
+    //     <MapView
+    //       showsCompass={true}
+    //       initialRegion={this.state.region}
+    //       onRegionChange={this.onRegionChange}
+    //       onMapReady={this.props.locate}
+    //       showsUserLocation={true}
+    //       showsMyLocationButton={true}
+    //       style={{ flex: 1 }}
+    //     />
+    //     <View
+    //       style={{
+    //         position: 'absolute',//use absolute position to show button on top of the map
+    //         top: '90%', //for center align
+    //         left: '53%',
+    //         alignSelf: 'flex-end' //for align to right
+    //       }}
+    //     >
+    //       <Button
+    //         title={'Add Treasure/Riddle'}
+    //         onPress={() => { this.onOpen() }}
+    //       >
+    //       </Button>
+    //       <Overlay visible={this.state.modalVisible} onClose={this.onClose} closeOnTouchOutside>
+    //         <Text>Some Modal Content</Text>
+    //       </Overlay>
+    //     </View>
+    //   </View>
+    // );
   }
-  //   return (
-  //     <MapView
-  //       style={{ flex: 1 }}
-  //       showsCompass={true}
-  //       initialRegion={this.state.region}
-  //       // onRegionChange={this.onRegionChange}
-  //       onMapReady={this.props.locate}
-  //       showsUserLocation={true}
-  //       showsMyLocationButton={true}
-  //     >
-  //       <Marker coordinate={this.state.region} />
-  //     </MapView>
-  //   );
-  // }
 }

@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import Inventory from "../components/profile/Inventory.js";
 import Stats from "../components/profile/Stats.js";
 import RiddlesTreasures from "../components/profile/RiddlesTreasures.js";
+import Rankings from "../components/LeaderBoard.js";
 
 
 const StatsStack = createStackNavigator({
@@ -53,6 +54,21 @@ RiddlesTreasuresStack.navigationOptions = {
     />
   ),
 };
+
+const RankingStack = createStackNavigator({
+  Rankings: Rankings,
+});
+
+RankingStack.navigationOptions = {
+  tabBarLabel: 'Rankings',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+    />
+  ),
+};
+
 export default createMaterialTopTabNavigator(
   {
     RiddlesTreasuresStack,

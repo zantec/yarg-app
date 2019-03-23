@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
+import { Ionicons } from '@expo/vector-icons'
 import Inventory from "../components/profile/Inventory.js";
 import Stats from "../components/profile/Stats.js";
 import RiddlesTreasures from "../components/profile/RiddlesTreasures.js";
@@ -62,10 +63,7 @@ const RankingStack = createStackNavigator({
 RankingStack.navigationOptions = {
   tabBarLabel: 'Rankings',
   tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
-    />
+    <Ionicons name="md-trophy" size={32} color="green" />
   ),
 };
 
@@ -74,8 +72,12 @@ export default createMaterialTopTabNavigator(
     RiddlesTreasuresStack,
     StatsStack,
     InventoryStack,
+    RankingStack,
   },
   {
-    initialRouteName: 'StatsStack'
+    initialRouteName: 'StatsStack',
+    tabBarOptions: {
+      showIcon: true,
+    }
   }
 );

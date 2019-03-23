@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Text, View, Image} from 'react-native';
 import Constants from 'expo';
 import axios from 'axios';
-import _ from lodash;
+import _ from 'lodash';
 
 export default class LeaderBoard extends Component {
   constructor(props) {

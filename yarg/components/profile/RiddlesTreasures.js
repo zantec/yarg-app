@@ -9,7 +9,7 @@ export default class RiddlesTreasures extends Component {
   render() {
     return (
       <View>
-        {_.map(this.props.treasures, treasure => {
+        {/* {_.map(this.props.treasures, treasure => {
           return (
             <View>
               <View>
@@ -28,7 +28,7 @@ export default class RiddlesTreasures extends Component {
               </View>
             </View>
           );
-        })}
+        })} */}
       </View>
     );
   }

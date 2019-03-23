@@ -59,6 +59,7 @@ export default class App extends React.Component {
             riddles: this.state.riddles,
             getLocation: this._getLocationAsync.bind(this),
             userLocation: this.state.userLocation,
+            treasureCoords: this.state.treasureCoords
           }}
           />
         </View>

@@ -12,8 +12,10 @@ import Gold from '../components/Gold.js'
 export default class ARScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      userCoords: null,
+    }
   }
-  
 
   // Render any loading content that you like here
   render() {
@@ -32,14 +34,15 @@ export default class ARScreen extends React.Component {
         treasures={this.props.screenProps.treasures}
         riddles={this.props.screenProps.riddles}
         getLocation={this.props.screenProps.getLocation}
-        userCoords={[
-          parseFloat(this.props.screenProps.userLocation.coords.longitude.toFixed(4)), 
-          parseFloat(this.props.screenProps.userLocation.coords.latitude.toFixed(4))
-        ]}
+          userCoords={[
+              parseFloat(this.props.screenProps.userLocation.coords.longitude.toFixed(4)),
+              parseFloat(this.props.screenProps.userLocation.coords.latitude.toFixed(4))
+            ]
+          }
         />
         <Gold goldAmount={this.props.screenProps.goldAmount} />
-        <Text>{JSON.stringify(this.props.screenProps.userLocation)}</Text>
-    
+        {/* <Text>{JSON.stringify(this.props.screenProps.userLocation)}</Text> */}
+        <Text>{JSON.stringify(this.props.screenProps.treasures)}</Text>
       </View>
     );
   }

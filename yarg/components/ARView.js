@@ -8,22 +8,42 @@ import ExpoTHREE, { AR as ThreeAR, THREE } from 'expo-three';
 import { View as GraphicsView } from 'expo-graphics';
 import { Vibration } from 'react-native';
 import axios from 'axios';
+import _ from 'lodash'
 
 import TouchableView from '../components/TouchableView';
 
 export default class ARView extends React.Component {
-  
+  constructor(props) {
+    super(props)
+    this.state = {
+      treasureCoords: null,
+      distances: null
+    }
+  }
+
   componentDidMount() {
     // Turn off extra warnings
     THREE.suppressExpoWarnings(true);
     ThreeAR.suppressWarnings();
-    console.log(this.props.treasures, 'didmount');
   }
 
-  componentDidUpdate() {
-    console.log(typeof this.props.userCoords[0]);
+  componentWillReceiveProps() {
+    if (this.state.treasureCoords === null) {
+      let treasureCoords = [];
+      this.props.treasures.forEach(treasure => treasureCoords.push(
+        [treasure.location_data.longitude, treasure.location_data.latitude]
+      ));
+      this.setState({ treasureCoords });
+    } else if (this.state.distances === null && this.state.treasureCoords.length) {
+      let distances = [];
+      this.state.treasureCoords.forEach(treasure => {
+        distances.push(this.haversineDistance(this.props.userCoords, treasure));
+      });
+      this.setState({ distances });
+      console.log(this.state);
+    }
+    console.log(this.state);
   }
-
 
   // ##Enable and handle touch## //
   touch = new THREE.Vector2();
@@ -64,12 +84,6 @@ export default class ARView extends React.Component {
   }
 
   // ##Get distance between user and extant treasures## //
-  getTreasureCoords = () => {
-    return this.props.treasures.map(treasure => 
-      [treasure.location_data.longitude, treasure.location_data.latitude]
-    );
-  }
-
   haversineDistance = (coords1, coords2, isMiles) => {
     function toRad(x) {
       return x * Math.PI / 180;

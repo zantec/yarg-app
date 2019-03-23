@@ -4,11 +4,56 @@ import Constants from 'expo';
 import axios from 'axios';
 
 export default class Inventory extends Component {
-
+  // Need to replace the props with something
+  constructor(props) {
+    super(props);
+  }
+  
   render() {
     return (
       <View>
-        <Text>Inventory</Text>
+        {this.props.inventory.items.length > 0 ?
+          <View>
+            <Text>
+              Items:
+          </Text>
+            {_.map(this.props.inventory.items, item => {
+              return (
+                <View>
+                  <Text>
+                    {item.name}:
+                </Text>
+                  <Text>
+                    {item.description}
+                  </Text>
+                </View>
+              )
+            })}
+          </View>
+          :
+          console.log(false)
+        }
+        {this.props.inventory.riddles.length > 0 ?
+          <View>
+            <Text>
+              Riddles:
+          </Text>
+            {_.map(this.props.inventory.riddles, riddle => {
+              return (
+                <View>
+                  <Text>
+                    Riddle Id: {riddle.id}
+                  </Text>
+                  <Text>
+                    {`Riidle Text:\n${riddle.riddle}`}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+          :
+          console.log(false)
+        }
       </View>
     );
   }

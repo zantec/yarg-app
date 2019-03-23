@@ -6,24 +6,30 @@ import AppNavigator from './navigation/AppNavigator';
 import _ from 'lodash';
 
 export default class App extends React.Component {
-  state = {
-    isLoadingComplete: false,
-    treasures: [],
-    riddles: [],
-    id_user: 0,
-    username: 'ryan',
-    avatar: '',
-    goldAmount: 0,
-    userTrasures: [],
-    userRiddles: [],
-    userLocation: null,
-  };
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLoadingComplete: false,
+      treasures: [],
+      riddles: [],
+      id_user: 0,
+      username: 'ryan',
+      avatar: '',
+      goldAmount: 0,
+      userTrasures: [],
+      userRiddles: [],
+      userLocation: null,
+      reverseLocated: null
+    };
+    this.locate = this.locate.bind(this);
+    this._getLocationAsync = this._getLocationAsync.bind(this);
+  }
+  
 
   componentDidMount() {
     this._getLocationAsync()
-      .then(() => this.locate())
+      .then(() => this.locate(this.state.reverseLocated))
       .catch((err) => console.error(err))
-    ;
   };
 
   appLogin(userObject) {
@@ -60,6 +66,7 @@ export default class App extends React.Component {
             riddles: this.state.riddles,
             getLocation: this._getLocationAsync.bind(this),
             userLocation: this.state.userLocation,
+            treasureCoords: this.state.treasureCoords
           }}
           />
         </View>
@@ -82,24 +89,19 @@ export default class App extends React.Component {
       .catch(err => console.error(err))
   }
 
-  locate = () => {
-      const lat = this.state.userLocation.coords.latitude
-      const long = this.state.userLocation.coords.longitude
-      axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${long}&key=817c561c66854ebeb245cf60f1c9d598`).then(result => {
-        // const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
-        const zipcode = '70115'
-        axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((treasuresResult) => {
-          axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((riddlesResult) => {
-          this.setState({
-              treasures: treasuresResult.data,
-              riddles: riddlesResult.data
-            });
-          }).catch((err) => {
-            console.log(err)
+  locate(locationInfo) {
+      const zipcode = locationInfo[0].postalCode;
+      axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((treasuresResult) => {
+        axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.state.username}&zipcode=${zipcode}`).then((riddlesResult) => {
+        this.setState({
+            treasures: treasuresResult.data,
+            riddles: riddlesResult.data,
           });
         }).catch((err) => {
           console.log(err)
         });
+      }).catch((err) => {
+        console.log(err)
       });
     setTimeout(this.locate, 18000000);
   }
@@ -113,7 +115,8 @@ export default class App extends React.Component {
     }
 
     let location = await Location.getCurrentPositionAsync({});
-    this.setState({ userLocation: location });
+    let reverseLocated = await Location.reverseGeocodeAsync(location.coords);
+    this.setState({ userLocation: location, reverseLocated: reverseLocated });
   };
 
   _loadResourcesAsync = async () => {

@@ -39,7 +39,6 @@ export default class Map extends React.Component {
           showsCompass={true}
           initialRegion={this.state.region}
           onRegionChange={this.onRegionChange}
-          onMapReady={this.props.locate}
           showsUserLocation={true}
           showsMyLocationButton={true}
           style={{ flex: 1 }}

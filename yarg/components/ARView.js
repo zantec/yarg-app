@@ -28,6 +28,7 @@ export default class ARView extends React.Component {
   }
 
   componentWillReceiveProps() {
+    console.log(this.props.treasures);
     if (this.state.treasureCoords === null) {
       let treasureCoords = [];
       this.props.treasures.forEach(treasure => treasureCoords.push(
@@ -40,7 +41,6 @@ export default class ARView extends React.Component {
         distances.push(this.haversineDistance(this.props.userCoords, treasure));
       });
       this.setState({ distances });
-      console.log(this.state);
     }
     console.log(this.state);
   }

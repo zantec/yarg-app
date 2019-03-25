@@ -41,8 +41,6 @@ export default class ARScreen extends React.Component {
           }
         />
         <Gold goldAmount={this.props.screenProps.goldAmount} />
-        {/* <Text>{JSON.stringify(this.props.screenProps.userLocation)}</Text> */}
-        <Text>{JSON.stringify(this.props.screenProps.treasures)}</Text>
       </View>
     );
   }

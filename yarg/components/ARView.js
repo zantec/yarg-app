@@ -17,7 +17,8 @@ export default class ARView extends React.Component {
     super(props)
     this.state = {
       treasureCoords: null,
-      distances: null
+      distances: null,
+      renderX: false,
     }
   }
 
@@ -27,21 +28,22 @@ export default class ARView extends React.Component {
     ThreeAR.suppressWarnings();
   }
 
-  componentWillReceiveProps() {
-    console.log(this.props.treasures);
+  componentDidUpdate(prevProps) {
     if (this.state.treasureCoords === null) {
       let treasureCoords = [];
       this.props.treasures.forEach(treasure => treasureCoords.push(
         [[treasure.location_data.longitude, treasure.location_data.latitude], treasure.id, treasure.gold_value]
       ));
       this.setState({ treasureCoords });
-    } else if (this.state.distances === null && this.state.treasureCoords.length) {
+    } else if (this.state.treasureCoords.length && this.props.userCoords !== prevProps.userCoords) {
       let distances = [];
       this.state.treasureCoords.forEach(treasure => {
         distances.push([this.haversineDistance(this.props.userCoords, treasure[0]), treasure[1], treasure[2]]);
       });
       distances.sort((a, b) => a[0] - b[0]);
       this.setState({ distances });
+      distances[0][0] < .003 ? this.setState({ renderX: true }) : this.setState({ renderX: false });
+      
     }
     console.log(this.state);
   }
@@ -146,8 +148,6 @@ export default class ARView extends React.Component {
     this.sprite.position.x = -10;
     this.sprite.position.z = -5;
     this.sprite.position.y = -10;
-    this.scene.add(this.sprite);
-
 
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
@@ -172,6 +172,15 @@ export default class ARView extends React.Component {
 
   // Called every frame.
   onRender = () => {
+    if (this.state.renderX) {
+      this.scene.add(this.sprite);
+    } else if (this.state.renderX === false) {
+        this.scene.traverse(function (object) {
+          if (object instanceof THREE.Sprite) {
+            this.scene.remove(object);
+          }
+        });
+      }
     // This will make the points get more rawDataPoints from Expo.AR
     this.points.update()
     // Finally render the scene with the AR Camera

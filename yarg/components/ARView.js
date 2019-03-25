@@ -168,6 +168,43 @@ export default class ARView extends React.Component {
     this.sprite.position.z = -5;
     this.sprite.position.y = -10;
 
+    // Load 3D object file for riddles
+    const riddleObj = await ExpoTHREE.loadObjAsync({ 
+      asset: require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.obj'),
+      mtlAsset: require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.mtl'),
+      onAssetRequested: {
+        '14059PirateTreasuremapScroll_diffuse.jpg': require('../assets/3D/scroll/14059PirateTreasuremapScroll_diffuse.jpg')
+      }
+    });
+
+    // const riddle = {
+    //   'obj': require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.obj'),
+    //   'mtl': require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.mtl'),
+    //   // 'jpg': require('../assets/3D/scroll/14059PirateTreasuremapScroll_diffuse.jpg'),
+    // };
+
+    // /// Load chest!
+    // const assetProvider = (name) => {
+    //   return riddle[name];
+    // };
+    // const riddleObj = await ExpoTHREE.loadAsync(
+    //   [riddle['obj'], riddle['mtl']],
+    //   null,
+    //   assetProvider,
+    // );
+
+
+    // this.riddleMesh = new THREE.Mesh(riddleObj, riddleTexture);
+    // this.riddleObj.scale.set(1, 1, 1);
+    // this.riddleObj.position.x = -10;
+    // this.riddleObj.position.z = -5;
+    // this.riddleObj.position.y = -10;
+    ExpoTHREE.utils.scaleLongestSideToSize(riddleObj, 5);
+    ExpoTHREE.utils.alignMesh(riddleObj, {x: -2, y: -1, z: -4 });
+    
+    this.scene.add(riddleObj);
+    
+
     // AmbientLight colors all things in the scene equally.
     this.scene.add(new THREE.AmbientLight(0xffffff));
 
@@ -192,13 +229,15 @@ export default class ARView extends React.Component {
   // Called every frame.
   onRender = () => {
     if (this.state.renderX) {
+      this.sprite.name = 'theSpot';
       this.scene.add(this.sprite);
     } else if (this.state.renderX === false) {
-        this.scene.traverse(function (object) {
-          if (object instanceof THREE.Sprite) {
-            this.scene.remove(object);
-          }
-        });
+      this.scene.remove(this.scene.getObjectByName('theSpot'));
+        // this.scene.traverse(function (object) {
+        //   if (object instanceof THREE.Sprite) {
+        //     this.scene.remove(object);
+        //   }
+        // });
       }
     // This will make the points get more rawDataPoints from Expo.AR
     this.points.update()

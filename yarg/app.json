@@ -34,7 +34,8 @@
     "assetExts": [
       "dae",
       "obj",
-      "mtl"
+      "mtl",
+      "fbx"
     ]
   }
 }

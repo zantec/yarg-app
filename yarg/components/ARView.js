@@ -17,8 +17,11 @@ export default class ARView extends React.Component {
     super(props)
     this.state = {
       treasureCoords: null,
-      distances: null,
+      treasureDistances: null,
+      riddleCoords: null,
+      riddleDistances: null,
       renderX: false,
+      renderRiddle: false,
     }
   }
 
@@ -29,6 +32,7 @@ export default class ARView extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+
     if (this.state.treasureCoords === null) {
       let treasureCoords = [];
       this.props.treasures.forEach(treasure => treasureCoords.push(
@@ -36,14 +40,29 @@ export default class ARView extends React.Component {
       ));
       this.setState({ treasureCoords });
     } else if (this.state.treasureCoords.length && this.props.userCoords !== prevProps.userCoords) {
-      let distances = [];
+      let treasureDistances = [];
       this.state.treasureCoords.forEach(treasure => {
-        distances.push([this.haversineDistance(this.props.userCoords, treasure[0]), treasure[1], treasure[2]]);
+        treasureDistances.push([this.haversineDistance(this.props.userCoords, treasure[0]), treasure[1], treasure[2]]);
       });
-      distances.sort((a, b) => a[0] - b[0]);
-      this.setState({ distances });
-      distances[0][0] < .003 ? this.setState({ renderX: true }) : this.setState({ renderX: false });
-      
+      treasureDistances.sort((a, b) => a[0] - b[0]);
+      this.setState({ treasureDistances });
+      treasureDistances[0][0] < .003 ? this.setState({ renderX: true }) : this.setState({ renderX: false });
+    }
+    
+    if (this.state.riddleCoords === null) {
+      let riddleCoords = [];
+      this.props.riddles.forEach(riddle => riddleCoords.push(
+        [[riddle.location_data.longitude, riddle.location_data.latitude], riddle.id]
+      ));
+      this.setState({ riddleCoords });
+    } else if (this.state.riddleCoords.length && this.props.userCoords !== prevProps.userCoords) {
+      let riddleDistances = [];
+      this.state.riddleCoords.forEach(riddle => {
+        riddleDistances.push([this.haversineDistance(this.props.userCoords, riddle[0]), riddle[1]]);
+      });
+      riddleDistances.sort((a, b) => a[0] - b[0]);
+      this.setState({ riddleDistances });
+      riddleDistances[0][0] < .003 ? this.setState({ renderRiddle: true }) : this.setState({ renderRiddle: false });
     }
     console.log(this.state);
   }

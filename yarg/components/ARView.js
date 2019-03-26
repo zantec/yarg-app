@@ -42,11 +42,15 @@ export default class ARView extends React.Component {
     } else if (this.state.treasureCoords.length && this.props.userCoords !== prevProps.userCoords) {
       let treasureDistances = [];
       this.state.treasureCoords.forEach(treasure => {
-        treasureDistances.push([this.haversineDistance(this.props.userCoords, treasure[0]), treasure[1], treasure[2]]);
+        treasureDistances.push({
+          distance: this.haversineDistance(this.props.userCoords, treasure[0]), 
+          treasureID: treasure[1], 
+          goldAmount: treasure[2]
+        });
       });
-      treasureDistances.sort((a, b) => a[0] - b[0]);
+      treasureDistances.sort((a, b) => a.distance - b.distance);
       this.setState({ treasureDistances });
-      treasureDistances[0][0] < .003 ? this.setState({ renderX: true }) : this.setState({ renderX: false });
+      treasureDistances[0].distance < .003 ? this.setState({ renderX: true }) : this.setState({ renderX: false });
     }
     
     if (this.state.riddleCoords === null) {
@@ -58,11 +62,14 @@ export default class ARView extends React.Component {
     } else if (this.state.riddleCoords.length && this.props.userCoords !== prevProps.userCoords) {
       let riddleDistances = [];
       this.state.riddleCoords.forEach(riddle => {
-        riddleDistances.push([this.haversineDistance(this.props.userCoords, riddle[0]), riddle[1]]);
+        riddleDistances.push({
+          distance: this.haversineDistance(this.props.userCoords, riddle[0]), 
+          riddleID: riddle[1]
+        });
       });
-      riddleDistances.sort((a, b) => a[0] - b[0]);
+      riddleDistances.sort((a, b) => a.distance - b.distance);
       this.setState({ riddleDistances });
-      riddleDistances[0][0] < .003 ? this.setState({ renderRiddle: true }) : this.setState({ renderRiddle: false });
+      riddleDistances[0].distance < .003 ? this.setState({ renderRiddle: true }) : this.setState({ renderRiddle: false });
     }
     console.log(this.state);
   }
@@ -86,26 +93,46 @@ export default class ARView extends React.Component {
       const { distance, face, faceIndex, object, point, uv } = intersect;
       //pass in the tapped object (the X) to function that will handle removing
       //it and updating database values for user gold/treasure & transactions
-      this.claimTreasureUpdateGold(object);
+      if (object.name === 'theSpot') {
+        this.claimTreasureUpdateGold();
+      } else if (object.name === 'riddleScroll') {
+        this.addRiddleToInventory();
+      }
     }
   };
 
   claimTreasureUpdateGold = (tappedX) => {
-    //remove X sprite from the scene
-    this.scene.remove(tappedX);
+    const closestX = this.state.treasureDistances.unshift();
+    
     //send patch request containing username and amount of gold to insert
     axios.patch(`http://${process.env.SERVER_API}/user/gold`, {
       username: 'acreed1998',
-      amount: 1000
+      amount: closestX.goldAmount
     })
-      .then(res => console.log(JSON.stringify(res)))
+      .then((res) => {
+        console.log(JSON.stringify(res));
+        this.setState({ renderX: false });
+      })
       .catch(err => console.error(err))
     //updates the current gold amount
     this.props.getGold();
     Vibration.vibrate();
   }
 
-  // ##Get distance between user and extant treasures## //
+  addRiddleToInventory = () => {
+    const closestRiddle = this.state.riddleDistances.unshift();
+    axios.patch(`http://${process.env.SERVER_API}/user/inventory`, {
+      id_user: 3,
+      id_riddle: closestRiddle.riddleID
+    })
+      .then((res) => {
+        console.log(JSON.stringify(res));
+        this.setState({ renderRiddle: false });
+      })
+      .catch(err => console.error(err))
+  }
+
+  //Get distance between user and treasure or riddles
   haversineDistance = (coords1, coords2, isMiles) => {
     function toRad(x) {
       return x * Math.PI / 180;
@@ -169,7 +196,7 @@ export default class ARView extends React.Component {
     this.sprite.position.y = -10;
 
     // Load 3D object file for riddles
-    const riddleObj = await ExpoTHREE.loadObjAsync({ 
+    this.riddleObj = await ExpoTHREE.loadObjAsync({ 
       asset: require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.obj'),
       mtlAsset: require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.mtl'),
       onAssetRequested: {
@@ -177,32 +204,14 @@ export default class ARView extends React.Component {
       }
     });
 
-    // const riddle = {
-    //   'obj': require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.obj'),
-    //   'mtl': require('../assets/3D/scroll/14059_Pirate_Treasure_map_Scroll_v1_L1.mtl'),
-    //   // 'jpg': require('../assets/3D/scroll/14059PirateTreasuremapScroll_diffuse.jpg'),
-    // };
-
-    // /// Load chest!
-    // const assetProvider = (name) => {
-    //   return riddle[name];
-    // };
-    // const riddleObj = await ExpoTHREE.loadAsync(
-    //   [riddle['obj'], riddle['mtl']],
-    //   null,
-    //   assetProvider,
-    // );
-
-
-    // this.riddleMesh = new THREE.Mesh(riddleObj, riddleTexture);
     // this.riddleObj.scale.set(1, 1, 1);
     // this.riddleObj.position.x = -10;
     // this.riddleObj.position.z = -5;
     // this.riddleObj.position.y = -10;
-    ExpoTHREE.utils.scaleLongestSideToSize(riddleObj, 5);
-    ExpoTHREE.utils.alignMesh(riddleObj, {x: -2, y: -1, z: -4 });
+    ExpoTHREE.utils.scaleLongestSideToSize(this.riddleObj, 5);
+    ExpoTHREE.utils.alignMesh(this.riddleObj, {x: -2, y: -1, z: -4 });
     
-    this.scene.add(riddleObj);
+    this.scene.add(this.riddleObj);
     
 
     // AmbientLight colors all things in the scene equally.
@@ -228,17 +237,24 @@ export default class ARView extends React.Component {
 
   // Called every frame.
   onRender = () => {
+    // add the 'X' sprite to the scene if renderX is true, otherwise remove it
     if (this.state.renderX) {
       this.sprite.name = 'theSpot';
       this.scene.add(this.sprite);
     } else if (this.state.renderX === false) {
       this.scene.remove(this.scene.getObjectByName('theSpot'));
-        // this.scene.traverse(function (object) {
-        //   if (object instanceof THREE.Sprite) {
-        //     this.scene.remove(object);
-        //   }
-        // });
       }
+    // add the 3D scroll obj to the scene if renderRiddle is true, otherwise remove it
+    if (this.state.renderRiddle) {
+      this.riddleObj.name = 'riddleScroll';
+      this.scene.add(this.riddleObj);
+    } else if (this.state.renderRiddle === false) {
+      this.scene.remove(this.scene.getObjectByName('riddleScroll'));
+    }
+
+    this.riddleObj.rotation.x += Math.PI / 180
+    this.riddleObj.rotation.y += Math.PI / 180
+    this.riddleObj.rotation.z += Math.PI / 180
     // This will make the points get more rawDataPoints from Expo.AR
     this.points.update()
     // Finally render the scene with the AR Camera

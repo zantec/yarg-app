@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet, ImageBackground } from 'react-native';
 import Constants from 'expo';
 import axios from 'axios';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 export default class Stats extends Component {
   constructor(props) {

@@ -101,7 +101,7 @@ export default class ARView extends React.Component {
     }
   };
 
-  claimTreasureUpdateGold = (tappedX) => {
+  claimTreasureUpdateGold = () => {
     const closestX = this.state.treasureDistances.unshift();
     
     //send patch request containing username and amount of gold to insert
@@ -213,9 +213,20 @@ export default class ARView extends React.Component {
     
     this.scene.add(this.riddleObj);
     
+    // SpotLight illuminates elements in a cone shape from a point
+    // this.spotLight = new THREE.SpotLight(0xffffff);
+    // this.spotLight.position.set(100, 1000, 100);
+    // this.spotLight.castShadow = true;
+    // this.spotLight.shadow.mapSize.width = 1024;
+    // this.spotLight.shadow.mapSize.height = 1024;
+    // this.spotLight.shadow.camera.near = 500;
+    // this.spotLight.shadow.camera.far = 4000;
+    // this.spotLight.shadow.camera.fov = 30;
+    // this.scene.add(this.spotLight);
+    this.scene.add(new THREE.SpotLight(0xffffff));
 
     // AmbientLight colors all things in the scene equally.
-    this.scene.add(new THREE.AmbientLight(0xffffff));
+    // this.scene.add(new THREE.AmbientLight(0xffffff));
 
     // Create this cool utility function that let's us see all the raw data points.
     this.points = new ThreeAR.Points();

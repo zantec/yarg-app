@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Text, View, Image, ImageBackground, StyleSheet, ScrollView } from 'react-native';
-import Constants from 'expo';
+import { Constants, Font } from 'expo';
 import axios from 'axios';
 import _ from 'lodash';
 import { Ionicons } from '@expo/vector-icons';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { Button, Overlay } from 'react-native-elements';
 
 export default class LeaderBoard extends Component {
   constructor(props) {
@@ -15,6 +16,7 @@ export default class LeaderBoard extends Component {
         gold: 'gold',
         'Treasures Placed': 'treasures_placed'
       },
+      exclude: ['avatar', 'username', 'id'],
       tableHead: ['Rank', 'User', 'Gold', 'Treasures Claimed'],
       tableData: [
       ],
@@ -22,8 +24,14 @@ export default class LeaderBoard extends Component {
       rankAvatarAndUsername: [],
       rankGold: [],
       rankTreasuresPlaced: [],
+      modalVisible: false,
+      viewedUser: {},
+      viewedUserIndex: 0,
+      fontLoaded: false,
     }
     this.resort = this.resort.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onOpen = this.onOpen.bind(this);
   }
 
   resort(value) {
@@ -50,45 +58,30 @@ export default class LeaderBoard extends Component {
     }).catch((err) => {
       console.log(err);
     });
+    Font.loadAsync({
+      'treamd': require('../assets/fonts/Treamd.ttf'),
+    }).then(res => {
+      this.setState({ fontLoaded: true });
+    });
+  }
+
+  onOpen() {
+    this.setState({ modalVisible: true });
+  }
+
+  onClose() {
+    this.setState({ modalVisible: false });
   }
 
   render() {
     console.log(this.state);
-    // return (
-    //   <ImageBackground style={style.backgroundImage} source={{uri: 'https://imgur.com/O15IDs5.jpg'}}>
-    //     <ScrollView style={style.holder} overScrollMode='always'>
-    //       <Text>
-    //         Rankings:
-    //       </Text>
-    //       {_.map(this.state.rankings, (rank, index) => {
-    //         return (
-    //           <View>
-    //             <Text>
-    //               {index + 1}
-    //             </Text>
-    //             <Image>
-    //             </Image>
-    //             <View>
-    //               <Text>
-    //                 {rank.username}
-    //               </Text>
-    //             </View>
-    //           </View>
-    //         );
-    //       })}
-    //     </ScrollView>
-    //   </ImageBackground>
-    // );
     return (
       <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
         <ScrollView style={style.holder} overScrollMode='always'>
           <View style={{ flex: 1, flexDirection: 'row' }}>
             {_.map(this.state.tableHead, item => {
               return (
-                <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', paddingTop: '10%' }}><Text onPress={() => {
-                  this.resort(_.replace(item.toLowerCase(), ' ', '_'));
-                  console.log()
-                }}>{item}</Text></View>
+                <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', paddingTop: '10%' }}><Text onPress={() => { this.resort(_.replace(item.toLowerCase(), ' ', '_')) }}>{item}</Text></View>
               )
             })}
           </View>
@@ -99,8 +92,10 @@ export default class LeaderBoard extends Component {
                   <Text>{index + 1}</Text>
                 </View>
                 <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, height: 33, width: 50 }}>
-                  <View style={{ flexWrap: 'wrap' }}><Text>{user.username}</Text></View>
-
+                  <View style={{ flexWrap: 'wrap' }}><Text onPress={() => {
+                    this.setState({ viewedUser: user, viewedUserIndex: index + 1 });
+                    this.onOpen();
+                  }}>{user.username}</Text></View>
                 </View>
                 <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', borderWidth: 1, height: 33, width: 50 }}>
                   <Text>{user.gold}</Text>
@@ -112,6 +107,38 @@ export default class LeaderBoard extends Component {
             )
           })}
         </ScrollView>
+        <View
+          style={{
+            position: 'absolute',//use absolute position to show button on top of the map
+            top: '90%', //for center align
+            left: '53%',
+            alignSelf: 'flex-end' //for align to right
+          }}
+        >
+          <Overlay isVisible={this.state.modalVisible} closeOnTouchOutside onBackdropPress={this.onClose} overlayBackgroundColor={'rgba(52, 52, 52, 0.0)'}>
+            <View style={{ height: '100%', width: '100%', backgroundColor: 'rgba(52, 52, 52, 0.8)', alignContent: 'center' }}>
+              <ImageBackground style={style.otherBackground} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
+                <ScrollView style={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={style.biggerPirateText}>WANTED</Text>
+                    <Image style={{ width: 150, height: 150, borderRadius: 500 }} source={{ uri: this.state.viewedUser.avatar }} />
+                  </View>
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={style.pirateText}>{`${this.state.viewedUser.username}`}</Text>
+                    <Text style={style.pirateText}>{`BOUNTY: ${Math.floor(4 * .25 / this.state.viewedUserIndex * 1000000)}`}</Text>
+                    {_.map(this.state.viewedUser, (value, key) => {
+                      if (!_.includes(this.state.exclude, key)) {
+                        return (
+                          <Text style={style.pirateText}>{`${_.startCase(_.replace(key, '_', ' '))}: ${value}`}</Text>
+                        );
+                      }
+                    })}
+                  </View>
+                </ScrollView>
+              </ImageBackground>
+            </View>
+          </Overlay>
+        </View>
       </ImageBackground>
     );
   }
@@ -120,6 +147,7 @@ export default class LeaderBoard extends Component {
 const style = StyleSheet.create({
   holder: {
     height: '100%',
+    alignContent: 'center',
     flex: 1,
   },
   // title: { flex: 1, backgroundColor: '#ffffff' },
@@ -128,5 +156,16 @@ const style = StyleSheet.create({
     height: '100%',
     width: '100%',
     flex: 1,
+  },
+  otherBackground: {
+    flex: 2
+  },
+  pirateText: {
+    fontSize: 26,
+    fontFamily: 'treamd',
+  },
+  biggerPirateText: {
+    fontSize: 50,
+    fontFamily: 'treamd',
   }
 });

@@ -20,8 +20,8 @@ export default class ARView extends React.Component {
       treasureDistances: null,
       riddleCoords: null,
       riddleDistances: null,
-      renderX: false,
-      renderRiddle: false,
+      renderX: true,
+      renderRiddle: true,
     }
   }
 
@@ -69,33 +69,34 @@ export default class ARView extends React.Component {
       });
       riddleDistances.sort((a, b) => a.distance - b.distance);
       this.setState({ riddleDistances });
-      riddleDistances[0].distance < .003 ? this.setState({ renderRiddle: true }) : this.setState({ renderRiddle: false });
+      riddleDistances[0].distance < .04 ? this.setState({ renderRiddle: true }) : this.setState({ renderRiddle: false });
     }
     console.log(this.state);
   }
 
   // ##Enable and handle touch## //
-  touch = new THREE.Vector2();
+  touch = new THREE.Vector3();
   raycaster = new THREE.Raycaster();
 
   updateTouch = ({ x, y }) => {
     const { width, height } = this.scene.size;
     this.touch.x = x / width * 2 - 1;
     this.touch.y = -(y / height) * 2 + 1;
-
+    // this.touch.z = -1 / Math.tan(22.5 * Math.PI / 180);
     this.runHitTest();
   };
 
   runHitTest = () => {
     this.raycaster.setFromCamera(this.touch, this.camera);
-    const intersects = this.raycaster.intersectObjects(this.scene.children);
+    const intersects = this.raycaster.intersectObjects(this.scene.children, true);
     for (const intersect of intersects) {
       const { distance, face, faceIndex, object, point, uv } = intersect;
       //pass in the tapped object (the X) to function that will handle removing
       //it and updating database values for user gold/treasure & transactions
       if (object.name === 'theSpot') {
         this.claimTreasureUpdateGold();
-      } else if (object.name === 'riddleScroll') {
+      } else {
+        console.log('riddle tapped!')
         this.addRiddleToInventory();
       }
     }
@@ -120,16 +121,17 @@ export default class ARView extends React.Component {
   }
 
   addRiddleToInventory = () => {
-    const closestRiddle = this.state.riddleDistances.unshift();
-    axios.patch(`http://${process.env.SERVER_API}/user/inventory`, {
-      id_user: 3,
-      id_riddle: closestRiddle.riddleID
-    })
-      .then((res) => {
-        console.log(JSON.stringify(res));
-        this.setState({ renderRiddle: false });
-      })
-      .catch(err => console.error(err))
+    this.setState({ renderRiddle: false });
+    // const closestRiddle = this.state.riddleDistances.unshift();
+    // axios.patch(`http://${process.env.SERVER_API}/user/inventory`, {
+    //   id_user: 3,
+    //   id_riddle: closestRiddle.riddleID
+    // })
+    //   .then((res) => {
+    //     console.log(JSON.stringify(res));
+    //     this.setState({ renderRiddle: false });
+    //   })
+    //   .catch(err => console.error(err))
   }
 
   //Get distance between user and treasure or riddles
@@ -191,7 +193,7 @@ export default class ARView extends React.Component {
     const spriteMaterial = new THREE.SpriteMaterial({ map: spriteMap, color: '#fff' });
     this.sprite = new THREE.Sprite(spriteMaterial);
     this.sprite.scale.set(1, 1, 1);
-    this.sprite.position.x = -10;
+    this.sprite.position.x = -5;
     this.sprite.position.z = -5;
     this.sprite.position.y = -10;
 
@@ -204,14 +206,18 @@ export default class ARView extends React.Component {
       }
     });
 
+    // add the riddleObj to a scene that we will add to our main scene
+    // so that we can detect intersections when it's tapped on
+    this.scene2 = new THREE.Scene();
+    this.scene.add(this.scene2);
+
     // this.riddleObj.scale.set(1, 1, 1);
-    // this.riddleObj.position.x = -10;
-    // this.riddleObj.position.z = -5;
+    // this.riddleObj.position.x = -5;
+    // this.riddleObj.position.z = -20;
     // this.riddleObj.position.y = -10;
     ExpoTHREE.utils.scaleLongestSideToSize(this.riddleObj, 5);
-    ExpoTHREE.utils.alignMesh(this.riddleObj, {x: -2, y: -1, z: -4 });
+    ExpoTHREE.utils.alignMesh(this.riddleObj, {x: -1, y: -1, z: -20 });
     
-    this.scene.add(this.riddleObj);
     
     // SpotLight illuminates elements in a cone shape from a point
     // this.spotLight = new THREE.SpotLight(0xffffff);
@@ -223,10 +229,10 @@ export default class ARView extends React.Component {
     // this.spotLight.shadow.camera.far = 4000;
     // this.spotLight.shadow.camera.fov = 30;
     // this.scene.add(this.spotLight);
-    this.scene.add(new THREE.SpotLight(0xffffff));
+    // this.scene.add(new THREE.SpotLight(0xffffff));
 
     // AmbientLight colors all things in the scene equally.
-    // this.scene.add(new THREE.AmbientLight(0xffffff));
+    this.scene.add(new THREE.AmbientLight(0xffffff));
 
     // Create this cool utility function that let's us see all the raw data points.
     this.points = new ThreeAR.Points();
@@ -258,14 +264,15 @@ export default class ARView extends React.Component {
     // add the 3D scroll obj to the scene if renderRiddle is true, otherwise remove it
     if (this.state.renderRiddle) {
       this.riddleObj.name = 'riddleScroll';
-      this.scene.add(this.riddleObj);
+      this.scene2.add(this.riddleObj);
+
+      // this.scene.add(this.riddleObj);
     } else if (this.state.renderRiddle === false) {
-      this.scene.remove(this.scene.getObjectByName('riddleScroll'));
+      this.scene2.remove(this.scene2.getObjectByName('riddleScroll'));
     }
 
-    this.riddleObj.rotation.x += Math.PI / 180
+    // add rotation animation to the scroll
     this.riddleObj.rotation.y += Math.PI / 180
-    this.riddleObj.rotation.z += Math.PI / 180
     // This will make the points get more rawDataPoints from Expo.AR
     this.points.update()
     // Finally render the scene with the AR Camera

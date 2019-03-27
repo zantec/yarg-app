@@ -13,15 +13,17 @@ export default class LeaderBoard extends Component {
       rankings: [],
       sortParams: {
         gold: 'gold',
+        'Treasures Placed': 'treasures_placed'
       },
-      tableHead: ['Rank', 'User', 'Gold', 'Treasures Placed'],
+      tableHead: ['Rank', 'User', 'Gold', 'Treasures Claimed'],
       tableData: [
       ],
       rankIndex: [],
       rankAvatarAndUsername: [],
       rankGold: [],
-      rankTreasuresPlaced: [9, 8, 77, 6, 5, 4, 3, 2, 1, 5],
+      rankTreasuresPlaced: [],
     }
+    this.resort = this.resort.bind(this);
   }
 
   resort(value) {
@@ -83,25 +85,28 @@ export default class LeaderBoard extends Component {
           <View style={{ flex: 1, flexDirection: 'row' }}>
             {_.map(this.state.tableHead, item => {
               return (
-                <View style={{ paddingLeft: '8%' }}><Text>{item}</Text></View>
+                <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', paddingTop: '10%' }}><Text onPress={() => {
+                  this.resort(_.replace(item.toLowerCase(), ' ', '_'));
+                  console.log()
+                }}>{item}</Text></View>
               )
             })}
           </View>
           {_.map(this.state.tableData, (user, index) => {
             return (
-              <View style={{ flex: 1, flexDirection: 'row' }}>
-                <View>
+              <View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+                <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 5, paddingRight: 5, borderWidth: 1, height: 33, width: 50 }}>
                   <Text>{index + 1}</Text>
                 </View>
-                <View style={{ paddingLeft: '8%', flexDirection: 'row' }}>
-                  <Image style={{ height: 25, width: 25 }} source={{ uri: 'https://imgur.com/KfhK2Br.png' }} />
-                  <Text>{user.username}</Text>
+                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, height: 33, width: 50 }}>
+                  <View style={{ flexWrap: 'wrap' }}><Text>{user.username}</Text></View>
+
                 </View>
-                <View style={{ paddingLeft: '8%' }}>
+                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', borderWidth: 1, height: 33, width: 50 }}>
                   <Text>{user.gold}</Text>
                 </View>
-                <View style={{ paddingLeft: '8%' }}>
-                  <Text>{this.state.rankTreasuresPlaced[index]}</Text>
+                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', borderWidth: 1, height: 33, width: 50 }}>
+                  <Text>{user.treasures_claimed}</Text>
                 </View>
               </View>
             )

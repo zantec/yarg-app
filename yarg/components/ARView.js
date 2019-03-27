@@ -206,8 +206,8 @@ export default class ARView extends React.Component {
       }
     });
 
-    // add the riddleObj to a scene that we will add to our main scene
-    // so that we can detect intersections when it's tapped on
+    // create a subscene to add to our main scene. later we'll add the scroll obj to it 
+    // and use the subscene to detect raycast intersections so we know if the scroll is 'tapped'
     this.scene2 = new THREE.Scene();
     this.scene.add(this.scene2);
 
@@ -261,7 +261,7 @@ export default class ARView extends React.Component {
     } else if (this.state.renderX === false) {
       this.scene.remove(this.scene.getObjectByName('theSpot'));
       }
-    // add the 3D scroll obj to the scene if renderRiddle is true, otherwise remove it
+    // add the subscene containing the scroll to the scene if renderRiddle is true, otherwise remove it
     if (this.state.renderRiddle) {
       this.riddleObj.name = 'riddleScroll';
       this.scene2.add(this.riddleObj);

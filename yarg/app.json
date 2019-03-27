@@ -27,14 +27,15 @@
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Allow Expo experiences to use your location"
       }
-  },
+    },
     "description": ""
   },
   "packagerOpts": {
     "assetExts": [
       "dae",
       "obj",
-      "mtl"
+      "mtl",
+      "fbx"
     ]
   }
 }

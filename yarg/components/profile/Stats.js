@@ -2,30 +2,31 @@ import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet, ImageBackground } from 'react-native';
 import Constants from 'expo';
 import axios from 'axios';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 export default class Stats extends Component {
   constructor(props) {
     super(props);
-    
-    props.user = {};
-    props.user.username = 'AND HIS NAME IS JOHN CENA!!!!!!!!';
-    props.user.gold = 100000;
+    // this.props.user = {};
+    // this.props.user.username = 'AND HIS NAME IS JOHN CENA!!!!!!!!';
+    // this.props.user.gold = 100000;
+  }
+
+  componentDidMount() {
   }
 
   render() {
     return (
       <ImageBackground source={{ uri: 'https://imgur.com/O15IDs5.jpg' }} style={style.backgroundImage}>
         <View style={style.holder}>
-          <Text>{this.props.user.username}'s Stats:</Text>
+          <Text>{this.props.screenProps.username}'s Stats:</Text>
           <View>
             <Image source={{ uri: 'https://imgur.com/KfhK2Br.png' }}
-              style={{ width: 50, height: 50, borderRadius: 40 }} />
+              style={{ width: 100, height: 50 }} />
             <Text>
-              Username: {this.props.user.username}
+              Username: {this.props.screenProps.username}
             </Text>
           </View>
-          <Text>Gold: {this.props.user.gold}</Text>
+          <Text>Gold: {this.props.screenProps.goldAmount}</Text>
         </View>
       </ImageBackground>
     );

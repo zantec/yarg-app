@@ -4,7 +4,6 @@ import { Constants, Font } from 'expo';
 import axios from 'axios';
 import _ from 'lodash';
 import { Ionicons } from '@expo/vector-icons';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 import { Button, Overlay } from 'react-native-elements';
 
 export default class LeaderBoard extends Component {
@@ -118,10 +117,10 @@ export default class LeaderBoard extends Component {
           <Overlay isVisible={this.state.modalVisible} closeOnTouchOutside onBackdropPress={this.onClose} overlayBackgroundColor={'rgba(52, 52, 52, 0.0)'}>
             <View style={{ height: '100%', width: '100%', backgroundColor: 'rgba(52, 52, 52, 0.8)', alignContent: 'center' }}>
               <ImageBackground style={style.otherBackground} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
-                <ScrollView style={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
+                <ScrollView contentContainertyle={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
                   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={style.biggerPirateText}>WANTED</Text>
-                    <Image style={{ width: 150, height: 150, borderRadius: 500 }} source={{ uri: this.state.viewedUser.avatar }} />
+                    <Image style={{ width: 250, height: 150 }} source={{ uri: 'https://imgur.com/KfhK2Br.png' }} />
                   </View>
                   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={style.pirateText}>{`${this.state.viewedUser.username}`}</Text>

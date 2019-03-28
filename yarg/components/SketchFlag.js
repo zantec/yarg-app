@@ -1,7 +1,8 @@
 import Expo from 'expo';
 import * as ExpoPixi from 'expo-pixi';
 import React, { Component } from 'react';
-import { Image, Button, Platform, AppState, StyleSheet, Text, View } from 'react-native';
+import { Image, Button, Platform, AppState, StyleSheet, Text, View, Modal, TouchableHighlight } from 'react-native';
+import HsvColorPicker from 'expo-hsv-color-picker';
 
 const isAndroid = Platform.OS === 'android';
 function uuidv4() {
@@ -15,6 +16,9 @@ function uuidv4() {
 
 export default class SketchFlag extends Component {
   state = {
+    hue: 0,
+    sat: 0,
+    val: 1,
     image: null,
     strokeColor: Math.random() * 0xffffff,
     strokeWidth: Math.random() * 30 + 10,
@@ -27,6 +31,7 @@ export default class SketchFlag extends Component {
       },
     ],
     appState: AppState.currentState,
+    modalVisible: false,
   };
 
   handleAppStateChangeAsync = nextAppState => {
@@ -60,6 +65,25 @@ export default class SketchFlag extends Component {
   onReady = () => {
     console.log('ready!');
   };
+
+  onSatValPickerChange({ saturation, value }) {
+    this.setState({
+      sat: saturation,
+      val: value,
+    });
+  }
+
+  onHuePickerChange({ hue }) {
+    this.setState({
+      hue,
+    });
+  }
+
+  toggleModal() {
+    this.setState({
+      modalVisible: !this.state.modalVisible
+    })
+  }
 
   render() {
     return (
@@ -95,6 +119,41 @@ export default class SketchFlag extends Component {
             this.sketch.undo();
           }}
         />
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{ marginTop: 22 }}>
+            <View>
+              <HsvColorPicker
+                huePickerHue={this.state.hue}
+                onHuePickerDragMove={this.onHuePickerChange.bind(this)}
+                onHuePickerPress={this.onHuePickerChange.bind(this)}
+                satValPickerHue={this.state.hue}
+                satValPickerSaturation={this.state.sat}
+                satValPickerValue={this.state.val}
+                onSatValPickerDragMove={this.onSatValPickerChange.bind(this)}
+                onSatValPickerPress={this.onSatValPickerChange.bind(this)}
+              />
+              <TouchableHighlight
+                onPress={() => {
+                  this.toggleModal();
+                }}>
+                <Text>Hide Modal</Text>
+              </TouchableHighlight>
+            </View>
+          </View>
+        </Modal>
+
+        <TouchableHighlight
+          onPress={() => {
+            this.toggleModal();
+          }}>
+          <Text>Show Modal</Text>
+        </TouchableHighlight>
       </View>
     );
   }

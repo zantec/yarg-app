@@ -99,7 +99,7 @@ export default class SketchFlag extends React.Component {
               onReady={this.onReady}
             />
             <View style={styles.label}>
-              <Text>Canvas - draw here</Text>
+              <Text>Draw up yer flag</Text>
             </View>
           </View>
         </View>
@@ -141,7 +141,7 @@ export default class SketchFlag extends React.Component {
                 onPress={() => {
                   this.toggleModal();
                 }}>
-                <Text>Hide Modal</Text>
+                <Text>Back to me flag</Text>
               </TouchableHighlight>
             </View>
           </View>
@@ -151,7 +151,7 @@ export default class SketchFlag extends React.Component {
           onPress={() => {
             this.toggleModal();
           }}>
-          <Text>Show Modal</Text>
+          <Text>Change yer brush</Text>
         </TouchableHighlight>
       </View>
     );

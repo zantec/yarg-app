@@ -6,12 +6,19 @@ import axios from 'axios';
 export default class Stats extends Component {
   constructor(props) {
     super(props);
+<<<<<<< HEAD
     // this.props.user = {};
     // this.props.user.username = 'AND HIS NAME IS JOHN CENA!!!!!!!!';
     // this.props.user.gold = 100000;
   }
 
   componentDidMount() {
+=======
+    
+    props.user = {};
+    props.user.username = 'AND HIS NAME IS JOHN CENA!!!!!!!!';
+    props.user.gold = 100000;
+>>>>>>> 5fd2e1c2ac0492dfbb1f4f0031e98d4fee91373e
   }
 
   render() {

@@ -7,6 +7,7 @@ import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-ta
 export default class Stats extends Component {
   constructor(props) {
     super(props);
+    
     props.user = {};
     props.user.username = 'AND HIS NAME IS JOHN CENA!!!!!!!!';
     props.user.gold = 100000;

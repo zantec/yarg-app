@@ -14,12 +14,12 @@ export default class Inventory extends Component {
     return (
       <SketchFlag/>
       // <View>
-      //   {this.props.inventory.items.length > 0 ?
+      //   {this.props.screenProps.inventory.items.length > 0 ?
       //     <View>
       //       <Text>
       //         Items:
       //     </Text>
-      //       {_.map(this.props.inventory.items, item => {
+      //       {_.map(this.props.screenProps.inventory.items, item => {
       //         return (
       //           <View>
       //             <Text>
@@ -35,12 +35,12 @@ export default class Inventory extends Component {
       //     :
       //     console.log(false)
       //   }
-      //   {this.props.inventory.riddles.length > 0 ?
+      //   {this.props.screenProps.inventory.riddles.length > 0 ?
       //     <View>
       //       <Text>
       //         Riddles:
       //     </Text>
-      //       {_.map(this.props.inventory.riddles, riddle => {
+      //       {_.map(this.props.screenProps.inventory.riddles, riddle => {
       //         return (
       //           <View>
       //             <Text>

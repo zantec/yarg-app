@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { MapView, AppLoading, Asset, Font, Icon, Location, Permissions } from 'expo';
-import { StyleSheet, View, Text, Picker, TextInput, Switch } from "react-native";
+import { StyleSheet, View, Text, Picker, TextInput, Switch, PickerIOS } from "react-native";
 import { Marker } from 'react-native-maps';
 import { Button } from 'react-native-elements';
 import Axios from 'axios';
 import _ from 'lodash';
 import Overlay from 'react-native-modal-overlay';
 import Slider from "react-native-slider";
+import IOSPicker from 'react-native-ios-picker';
+import Toast, { DURATION } from 'react-native-easy-toast'
 
 export default class Map extends React.Component {
   constructor(props) {
@@ -27,27 +29,48 @@ export default class Map extends React.Component {
         zipcode: 0,
       },
       treasures: [],
+      riddles: [],
       modalVisible: false,
       value: 500,
       toggle: 'Treasure',
       text: 'ENTER RIDDLE HERE',
       riddleTitle: 'A Title',
       userLocation: '',
-      userTreasure: 0,
+      userTreasure: '0',
       switchValue: false,
+      user: {},
     }
+    this.locate = this.locate.bind(this);
     this.onClose = this.onClose.bind(this);
     this.onOpen = this.onOpen.bind(this);
     this.store = this.store.bind(this);
     this._getLocationAsync = this._getLocationAsync.bind(this);
+    this.updateUser = this.updateUser.bind(this);
+    this.changeGold = this.changeGold.bind(this);
   }
 
-  onOpen() {
-    this.setState({ modalVisible: true });
-  }
-
-  onClose() {
-    this.setState({ modalVisible: false });
+  locate() {
+    // const scope = this;
+    // navigator.geolocation.getCurrentPosition(position => {
+    //   Axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=fff0c9fd594a41aa9abeb0a5233ceba9`).then(result => {
+    //     const zipcode = _.slice(result.data.results[0].components.postcode.split(''), 0, 5).join('');
+    //     Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/treasures/zipcode?username=${this.props.screenProps.username}&zipcode=${zipcode}`).then((treasuresResult) => {
+    //       Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/riddles/zipcode?username=${this.props.screenProps.username}&zipcode=${zipcode}`).then((riddlesResult) => {
+    //         scope.setState({
+    //           treasures: treasuresResult.data,
+    //           riddles: riddlesResult.data
+    //         });
+    //       }).catch((err) => {
+    //         console.log(err)
+    //       });
+    //     }).catch((err) => {
+    //       console.log(err)
+    //     });
+    //   });
+    // }, (err) => {
+    //   console.log(err);
+    // }, { enableHighAccuracy: true, timeout: 20000, });
+    // setTimeout(this.locate, 3000000);
   }
 
   store = () => {
@@ -71,10 +94,12 @@ export default class Map extends React.Component {
               city: address.City,
               state: address.State,
               zipcode: address.PostalCode,
-              id_user: '2',
+              id_user: this.props.screenProps !== undefined ? this.props.screenProps.user.id : '2',
             }
           }).then(result => {
             console.log(result.data);
+            this.updateUser();
+            this.changeGold();
           }).catch(err => {
             console.log(err);
           });
@@ -90,7 +115,7 @@ export default class Map extends React.Component {
           console.log(address);
           Axios({
             method: 'post',
-            url: 'http://ec2-18-191-183-109.us-east-2.compute.amazonaws.com/api/user/riddles',
+            url: 'ec2-18-191-183-109.us-east-2.compute.amazonaws.com/api/user/riddles',
             data: {
               longitude: coords.longitude,
               latitude: coords.latitude,
@@ -98,13 +123,14 @@ export default class Map extends React.Component {
               city: address.City,
               state: address.State,
               zipcode: address.PostalCode,
-              id_user: '2',
+              id_user: this.props.screenProps !== undefined ? this.props.screenProps.user.id : '2',
               riddle: scope.text,
               title: scope.riddleTitle,
               id_treasure: scope.userTreasure,
             }
           }).then(result => {
             console.log(result.data);
+            this.updateUser();
           }).catch(err => {
             console.log(err);
           });
@@ -128,13 +154,14 @@ export default class Map extends React.Component {
               city: address.City,
               state: address.State,
               zipcode: address.PostalCode,
-              id_user: '2',
+              id_user: this.props.screenProps !== undefined ? this.props.screenProps.user.id : '2',
               riddle: scope.text,
               title: scope.riddleTitle,
               id_treasure: scope.userTreasure,
             }
           }).then(result => {
             console.log(result.data);
+            this.updateUser();
           }).catch(err => {
             console.log(err);
           });
@@ -145,7 +172,44 @@ export default class Map extends React.Component {
     }).catch(err => {
       console.log(err);
     });
+    this.onClose();
   };
+
+  updateUser = () => {
+    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(result => {
+      this.setState({ user: result.data, text: 'ENTER RIDDLE HERE', value: 500 });
+      this.refs.toast.show(`Successfully Added ${this.state.toggle}`)
+    }).catch(err => {
+      console.log(err);
+    });
+  };
+
+  changeGold = () => {
+    Axios({
+      method: 'patch',
+      url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/gold',
+      data: {
+        username: this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998',
+        amount: parseInt(`-${this.state.value}`),
+      },
+    }).then(result => {
+      const user = this.state.user;
+      user.gold = result.data.gold;
+      this.setState({ user: user });
+    }).catch(err => {
+      console.log(err);
+    });
+    //patch(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/gold`)
+    //username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}
+  };
+
+  componentDidMount() {
+    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(result => {
+      this.setState({ user: result.data });
+    }).catch(err => {
+      console.log(err);
+    });
+  }
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -157,14 +221,24 @@ export default class Map extends React.Component {
     let location = await Location.getCurrentPositionAsync({});
     return location.coords;
   };
-  
+
+  onOpen() {
+    this.setState({ modalVisible: true });
+  }
+
+  onClose() {
+    this.setState({ modalVisible: false });
+  }
+
   render() {
+    console.log(this.state);
     return (
       <View style={{ flex: 1 }}>
         <MapView
           showsCompass={true}
           initialRegion={this.state.region}
           onRegionChange={this.onRegionChange}
+          onMapReady={this.locate}
           showsUserLocation={true}
           showsMyLocationButton={true}
           style={{ flex: 1 }}
@@ -187,7 +261,7 @@ export default class Map extends React.Component {
               {this.state.toggle === 'Riddle' ?
                 <View>
                   <Text>
-                    Choose Treasure Id:
+                    Choose Riddle Id:
                 </Text>
                   <Picker
                     selectedValue={this.state.userTreasure}
@@ -196,8 +270,11 @@ export default class Map extends React.Component {
                     onValueChange={(itemValue, itemIndex) =>
                       this.setState({ userTreasure: itemValue })
                     }>
-                    <Picker.Item label="7" value="7" />
-                    <Picker.Item label="8" value="8" />
+                    {_.map(this.state.user.treasures, (treasure, index) => {
+                      return (
+                        <Picker.Item label={`${treasure.id.toString()}. ${treasure.location_data.address}`} value={treasure.id.toString()} />
+                      )
+                    })}
                   </Picker>
                   <View>
                     <Text>
@@ -216,7 +293,8 @@ export default class Map extends React.Component {
                 <View>
                   <Slider
                     minimumValue={500}
-                    maximumValue={5000}
+                    maximumValue={this.state.user.gold}
+                    step={5}
                     value={this.state.value}
                     onValueChange={value => this.setState({ value })}
                   />
@@ -244,6 +322,7 @@ export default class Map extends React.Component {
             </View>
           </Overlay>
         </View>
+        <Toast ref={`toast`} />
       </View>
     );
   }

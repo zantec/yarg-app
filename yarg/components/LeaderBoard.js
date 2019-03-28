@@ -87,19 +87,19 @@ export default class LeaderBoard extends Component {
           {_.map(this.state.tableData, (user, index) => {
             return (
               <View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
-                <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 5, paddingRight: 5, borderWidth: 1, height: 33, width: 50 }}>
+                <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 5, paddingRight: 5, height: 33, width: 50 }}>
                   <Text>{index + 1}</Text>
                 </View>
-                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, height: 33, width: 50 }}>
+                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', flexWrap: 'wrap', height: 33, width: 50 }}>
                   <View style={{ flexWrap: 'wrap' }}><Text onPress={() => {
                     this.setState({ viewedUser: user, viewedUserIndex: index + 1 });
                     this.onOpen();
                   }}>{user.username}</Text></View>
                 </View>
-                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', borderWidth: 1, height: 33, width: 50 }}>
+                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', height: 33, width: 50 }}>
                   <Text>{user.gold}</Text>
                 </View>
-                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', borderWidth: 1, height: 33, width: 50 }}>
+                <View style={{ flex: 1, alignSelf: 'center', flexDirection: 'row', height: 33, width: 50 }}>
                   <Text>{user.treasures_claimed}</Text>
                 </View>
               </View>

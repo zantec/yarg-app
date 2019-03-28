@@ -45,7 +45,7 @@ export default class RiddleModal extends Component {
       console.log(err);
     });
     Font.loadAsync({
-      'treamd': require('./assets/fonts/Treamd.ttf'),
+      'treamd': require('../assets/fonts/Treamd.ttf'),
     }).then(res => {
       this.setState({ fontLoaded: true });
     });
@@ -54,7 +54,7 @@ export default class RiddleModal extends Component {
   render() {
     console.log(this.state);
     return (
-      <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
+      // <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
         <View style={{ marginTop: 22 }}>
           <Modal
             animationType="slide"
@@ -122,7 +122,7 @@ export default class RiddleModal extends Component {
             <Overlay isVisible={this.state.otherModalVisible} closeOnTouchOutside onBackdropPress={this.onClose} overlayBackgroundColor={'rgba(52, 52, 52, 0.0)'}>
               <View style={{ height: '100%', width: '100%', backgroundColor: 'rgba(52, 52, 52, 0.8)', alignContent: 'center' }}>
                 <ImageBackground style={style.otherBackground} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
-                  <ScrollView style={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
+                  <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
                     <Button style={{ paddingTop: 25 }} title={'Set Active Riddle'} onPress={() => { this.setState({ currentRiddle: this.state.modalRiddle }) }}></Button>
                     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                       <Text style={style.biggerPirateText}>{this.state.modalTitle}</Text>
@@ -141,7 +141,7 @@ export default class RiddleModal extends Component {
             <Text>View me riddle</Text>
           </TouchableHighlight>
         </View>
-      </ImageBackground>
+      // </ImageBackground>
     );
   }
 }

@@ -3,6 +3,7 @@ import * as ExpoPixi from 'expo-pixi';
 import React, { Component } from 'react';
 import { Image, Button, Platform, AppState, StyleSheet, Text, View, Modal, TouchableHighlight, Slider } from 'react-native';
 import HsvColorPicker from 'expo-hsv-color-picker';
+import CryptoJS from 'crypto-js';
 
 const isAndroid = Platform.OS === 'android';
 function uuidv4() {
@@ -84,6 +85,28 @@ export default class SketchFlag extends React.Component {
     })
   }
 
+  uploadImage(uri) {
+    let timestamp = (Date.now() / 1000 | 0).toString();
+    let api_key = '788247137418389'
+    let api_secret = '8f82MsNIs5M-Snzhmf-Ixjmx63o'
+    let cloud = 'yarg'
+    let hash_string = 'timestamp=' + timestamp + api_secret
+    let signature = CryptoJS.SHA1(hash_string).toString();
+    let upload_url = 'https://api.cloudinary.com/v1_1/' + cloud + '/image/upload'
+
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', upload_url);
+    xhr.onload = () => {
+      // console.log(xhr);
+    };
+    let formdata = new FormData();
+    formdata.append('file', { uri: uri, type: 'image/png', name: 'upload.png' });
+    formdata.append('timestamp', timestamp);
+    formdata.append('api_key', api_key);
+    formdata.append('signature', signature);
+    xhr.send(formdata);
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -109,6 +132,14 @@ export default class SketchFlag extends React.Component {
           style={styles.button}
           onPress={() => {
             this.sketch.undo();
+          }}
+        />
+        <Button
+          color={'blue'}
+          title="y'arg"
+          style={styles.button}
+          onPress={() => {
+            this.uploadImage(this.state.image);
           }}
         />
         <Modal

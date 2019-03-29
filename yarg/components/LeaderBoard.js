@@ -80,13 +80,13 @@ export default class LeaderBoard extends Component {
           <View style={{ flex: 1, flexDirection: 'row' }}>
             {_.map(this.state.tableHead, item => {
               return (
-                <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', paddingTop: '10%' }}><Text onPress={() => { this.resort(_.replace(item.toLowerCase(), ' ', '_')) }}>{item}</Text></View>
+                <View key={item} style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', paddingTop: '10%' }}><Text onPress={() => { this.resort(_.replace(item.toLowerCase(), ' ', '_')) }}>{item}</Text></View>
               )
             })}
           </View>
           {_.map(this.state.tableData, (user, index) => {
             return (
-              <View style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
+              <View key={index} style={{ flex: 1, flexDirection: 'row', alignContent: 'center' }}>
                 <View style={{ flex: 0, alignSelf: 'stretch', flexDirection: 'row', paddingLeft: 5, paddingRight: 5, height: 33, width: 50 }}>
                   <Text>{index + 1}</Text>
                 </View>
@@ -128,7 +128,7 @@ export default class LeaderBoard extends Component {
                     {_.map(this.state.viewedUser, (value, key) => {
                       if (!_.includes(this.state.exclude, key)) {
                         return (
-                          <Text style={style.pirateText}>{`${_.startCase(_.replace(key, '_', ' '))}: ${value}`}</Text>
+                          <Text key={key} style={style.pirateText}>{`${_.startCase(_.replace(key, '_', ' '))}: ${value}`}</Text>
                         );
                       }
                     })}

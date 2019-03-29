@@ -14,7 +14,7 @@ export default class RiddlesTreasures extends Component {
       <View>
         {_.map(this.props.screenProps.treasures, treasure => {
           return (
-            <View>
+            <View key={treasure.id}>
               <View>
                 <Text>Treasure: {treasure.id}</Text>
                 <Text>Gold Value: {treasure.gold_value}</Text>

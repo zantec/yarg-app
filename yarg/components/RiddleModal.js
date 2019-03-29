@@ -108,7 +108,7 @@ export default class RiddleModal extends Component {
                 <Text>Board Riddles:</Text>
                 {_.map(this.state.riddleBoardRiddles, riddle => {
                   return (
-                    <View>
+                    <View key={riddle}>
                       <Text onPress={() => {
                         this.setState({ modalRiddle: riddle.riddle, modalTitle: riddle.title });
                         this.onOpen();
@@ -119,7 +119,7 @@ export default class RiddleModal extends Component {
                 <Text>Inventory Riddles:</Text>
                 {this.state.user.inventory === undefined ? console.log(undefined) : _.map(this.state.user.inventory.riddles, riddle => {
                   return (
-                    <View>
+                    <View key={riddle}>
                       <Text onPress={() => {
                         this.setState({ modalRiddle: riddle.riddle, modalTitle: riddle.title });
                         this.onOpen();

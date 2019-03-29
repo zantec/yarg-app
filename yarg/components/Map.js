@@ -265,13 +265,13 @@ export default class Map extends React.Component {
                   </Text>
                   <Picker
                     selectedValue={this.state.userTreasure}
-                    style={{ height: 150, width: 100 }}
+                    style={{ height: 150, width: 275, marginBottom: 50 }}
                     onValueChange={(itemValue, itemIndex) =>
                       this.setState({ userTreasure: itemValue })
                     }>
                     {_.map(this.state.user.treasures, (treasure, index) => {
                       return (
-                        <Picker.Item label={`${treasure.id.toString()}. ${treasure.location_data.address}`} value={treasure.id.toString()} />
+                        <Picker.Item key={index} label={`${treasure.id.toString()}. ${treasure.location_data.address}`} value={treasure.id.toString()} />
                       )
                     })}
                   </Picker>

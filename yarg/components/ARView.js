@@ -30,6 +30,7 @@ export default class ARView extends React.Component {
     // Turn off extra warnings
     THREE.suppressExpoWarnings(true);
     ThreeAR.suppressWarnings();
+    this.props.getGold();
   }
 
   componentDidUpdate(prevProps) {

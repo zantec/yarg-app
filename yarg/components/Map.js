@@ -178,7 +178,7 @@ export default class Map extends React.Component {
   updateUser = () => {
     Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(result => {
       this.setState({ user: result.data, text: 'ENTER RIDDLE HERE', value: 500 });
-      this.refs.toast.show(`Successfully Added ${this.state.toggle}`)
+      this.refs.toast.show(`Successfully Added ${this.state.toggle}`);
     }).catch(err => {
       console.log(err);
     });

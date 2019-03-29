@@ -6,9 +6,6 @@ import axios from 'axios';
 export default class Stats extends Component {
   constructor(props) {
     super(props);
-    // this.props.user = {};
-    // this.props.user.username = 'AND HIS NAME IS JOHN CENA!!!!!!!!';
-    // this.props.user.gold = 100000;
   }
 
   componentDidMount() {

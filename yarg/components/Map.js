@@ -114,7 +114,7 @@ export default class Map extends React.Component {
           // console.log(address);
           Axios({
             method: 'post',
-            url: 'ec2-18-191-183-109.us-east-2.compute.amazonaws.com/api/user/riddles',
+            url: 'http://ec2-18-191-183-109.us-east-2.compute.amazonaws.com/api/user/riddle',
             data: {
               longitude: coords.longitude,
               latitude: coords.latitude,

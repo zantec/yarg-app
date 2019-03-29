@@ -58,7 +58,7 @@ export default class App extends React.Component {
           {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
           <AppNavigator 
           screenProps={{
-            getGold: this.getGold,
+            getGold: this.getGold.bind(this),
             goldAmount: this.state.goldAmount,
             appLogin: this.appLogin.bind(this),
             locate: this.locate.bind(this),

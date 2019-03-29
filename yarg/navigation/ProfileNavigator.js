@@ -33,7 +33,7 @@ const InventoryStack = createStackNavigator({
 });
 
 InventoryStack.navigationOptions = {
-  tabBarLabel: 'Inventory',
+  tabBarLabel: 'Flag',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
@@ -63,7 +63,7 @@ const RankingStack = createStackNavigator({
 RankingStack.navigationOptions = {
   tabBarLabel: 'Rankings',
   tabBarIcon: ({ focused }) => (
-    <Ionicons name="md-trophy" size={32} color="green" />
+    <Ionicons name="md-trophy" size={32} color="gold" />
   ),
 };
 

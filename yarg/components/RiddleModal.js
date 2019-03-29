@@ -52,7 +52,7 @@ export default class RiddleModal extends Component {
   }
 
   render() {
-    console.log(this.state);
+    // console.log(this.state);
     return (
       // <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
         <View style={{ marginTop: 22 }}>

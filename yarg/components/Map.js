@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { MapView, AppLoading, Asset, Font, Icon, Location, Permissions } from 'expo';
-import { StyleSheet, View, Text, Picker, TextInput, Switch } from "react-native";
+import { StyleSheet, View, Text, Picker, TextInput, Switch, PickerIOS } from "react-native";
 import { Marker } from 'react-native-maps';
 import { Button } from 'react-native-elements';
 import Axios from 'axios';
@@ -59,7 +59,7 @@ export default class Map extends React.Component {
           url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
         }).then(locationData => {
           const address = locationData.data.Response.View[0].Result[0].Location.Address
-          console.log(address);
+          // console.log(address); 
           Axios({
             method: 'post',
             url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/treasures',
@@ -74,7 +74,7 @@ export default class Map extends React.Component {
               id_user: '2',
             }
           }).then(result => {
-            console.log(result.data);
+            // console.log(result.data);
           }).catch(err => {
             console.log(err);
           });
@@ -87,7 +87,7 @@ export default class Map extends React.Component {
           url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
         }).then(locationData => {
           const address = locationData.data.Response.View[0].Result[0].Location.Address
-          console.log(address);
+          // console.log(address);
           Axios({
             method: 'post',
             url: 'http://ec2-18-191-183-109.us-east-2.compute.amazonaws.com/api/user/riddles',
@@ -104,7 +104,7 @@ export default class Map extends React.Component {
               id_treasure: scope.userTreasure,
             }
           }).then(result => {
-            console.log(result.data);
+            // console.log(result.data);
           }).catch(err => {
             console.log(err);
           });
@@ -117,7 +117,7 @@ export default class Map extends React.Component {
           url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
         }).then(locationData => {
           const address = locationData.data.Response.View[0].Result[0].Location.Address
-          console.log(address);
+          // console.log(address);
           Axios({
             method: 'post',
             url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/riddles',
@@ -134,7 +134,7 @@ export default class Map extends React.Component {
               id_treasure: scope.userTreasure,
             }
           }).then(result => {
-            console.log(result.data);
+            // console.log(result.data);
           }).catch(err => {
             console.log(err);
           });
@@ -188,21 +188,20 @@ export default class Map extends React.Component {
                 <View>
                   <Text>
                     Choose Treasure Id:
-                </Text>
+                  </Text>
                   <Picker
                     selectedValue={this.state.userTreasure}
-                    mode={'dropdown'}
-                    style={{ height: 50, width: 100 }}
+                    style={{ height: 150, width: 100 }}
                     onValueChange={(itemValue, itemIndex) =>
                       this.setState({ userTreasure: itemValue })
                     }>
-                    <Picker.Item label="7" value="7" />
-                    <Picker.Item label="8" value="8" />
+                    <Picker.Item label="Long John's Doubloons" value="7" />
+                    <Picker.Item label="Broad Street Treasure" value="8" />
                   </Picker>
                   <View>
                     <Text>
                       Procedural Generate:
-                  </Text>
+                    </Text>
                     <Switch
                       onValueChange={() => { this.setState({ switchValue: !this.state.switchValue }) }}
                       value={this.state.switchValue} />
@@ -280,7 +279,6 @@ const styles = StyleSheet.create({
     padding: 12,
     minWidth: 56,
     minHeight: 48,
-    color: 'green',
     width: '40%'
   },
   container: {

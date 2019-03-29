@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Image, Button, Platform, AppState, StyleSheet, Text, View, Modal, TouchableHighlight, Slider } from 'react-native';
 import HsvColorPicker from 'expo-hsv-color-picker';
 import CryptoJS from 'crypto-js';
+import Axios from 'axios';
 
 const isAndroid = Platform.OS === 'android';
 function uuidv4() {
@@ -85,7 +86,7 @@ export default class SketchFlag extends React.Component {
     })
   }
 
-  uploadImage(uri) {
+  uploadImage(uri, cb) {
     let timestamp = (Date.now() / 1000 | 0).toString();
     let api_key = '788247137418389'
     let api_secret = '8f82MsNIs5M-Snzhmf-Ixjmx63o'
@@ -97,7 +98,7 @@ export default class SketchFlag extends React.Component {
     let xhr = new XMLHttpRequest();
     xhr.open('POST', upload_url);
     xhr.onload = () => {
-      // console.log(xhr);
+      cb(JSON.parse(xhr._response).secure_url)
     };
     let formdata = new FormData();
     formdata.append('file', { uri: uri, type: 'image/png', name: 'upload.png' });
@@ -105,6 +106,15 @@ export default class SketchFlag extends React.Component {
     formdata.append('api_key', api_key);
     formdata.append('signature', signature);
     xhr.send(formdata);
+  }
+
+  saveNewAvatar(avatarURI) {
+    Axios.patch(`http://${process.env.SERVER_API}/user/avatar`, {
+      username: 'ryan',
+      avatar: avatarURI
+    })
+    .then(res => {})
+    .catch(err => {})
   }
 
   render() {
@@ -139,7 +149,7 @@ export default class SketchFlag extends React.Component {
           title="y'arg"
           style={styles.button}
           onPress={() => {
-            this.uploadImage(this.state.image);
+            this.uploadImage(this.state.image, this.saveNewAvatar);
           }}
         />
         <Modal

@@ -120,7 +120,7 @@ export default class LeaderBoard extends Component {
                 <ScrollView contentContainertyle={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
                   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={style.biggerPirateText}>WANTED</Text>
-                    <Image style={{ width: 250, height: 150 }} source={{ uri: 'https://imgur.com/KfhK2Br.png' }} />
+                    <Image style={{ width: 250, height: 150 }} source={{ uri: this.state.viewedUser.avatar }} />
                   </View>
                   <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                     <Text style={style.pirateText}>{`${this.state.viewedUser.username}`}</Text>

@@ -21,7 +21,7 @@ export default class Stats extends Component {
         <View style={style.holder}>
           <Text>{this.props.screenProps.username}'s Stats:</Text>
           <View>
-            <Image source={{ uri: 'https://imgur.com/KfhK2Br.png' }}
+            <Image source={{ uri: this.props.screenProps.user.avatar }}
               style={{ width: 100, height: 50 }} />
             <Text>
               Username: {this.props.screenProps.username}
@@ -30,7 +30,7 @@ export default class Stats extends Component {
           {_.map(this.props.screenProps.user, (value, key) => {
             if (!_.includes(this.state.exclude, key)) {
               return (
-                <Text>{`${_.startCase(_.replace(key, '_', ' '))}: ${value}`}</Text>
+                <Text key={key}>{`${_.startCase(_.replace(key, '_', ' '))}: ${value}`}</Text>
               );
             }
           })}

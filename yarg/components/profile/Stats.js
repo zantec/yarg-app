@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Text, View, Image, StyleSheet, ImageBackground } from 'react-native';
 import Constants from 'expo';
 import axios from 'axios';
+import _ from 'lodash';
 
 export default class Stats extends Component {
   constructor(props) {
     super(props);
-    // this.props.user = {};
-    // this.props.user.username = 'AND HIS NAME IS JOHN CENA!!!!!!!!';
-    // this.props.user.gold = 100000;
+    this.state = {
+      exclude: ['avatar', 'username', 'password', 'salt']
+    };
   }
 
   componentDidMount() {
@@ -26,7 +27,13 @@ export default class Stats extends Component {
               Username: {this.props.screenProps.username}
             </Text>
           </View>
-          <Text>Gold: {this.props.screenProps.goldAmount}</Text>
+          {_.map(this.props.screenProps.user, (value, key) => {
+            if (!_.includes(this.state.exclude, key)) {
+              return (
+                <Text>{`${_.startCase(_.replace(key, '_', ' '))}: ${value}`}</Text>
+              );
+            }
+          })}
         </View>
       </ImageBackground>
     );

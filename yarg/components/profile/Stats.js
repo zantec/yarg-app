@@ -8,7 +8,7 @@ export default class Stats extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      exclude: ['avatar', 'username', 'password', 'salt']
+      exclude: ['avatar', 'username', 'password', 'salt', 'treasures', 'inventory', 'riddles', 'id']
     };
   }
 

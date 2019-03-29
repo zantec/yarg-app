@@ -133,22 +133,22 @@ export default class ARView extends React.Component {
   addRiddleToInventory = () => {
     let riddCoords = this.state.riddleCoords;
     const closestRiddle = this.state.riddleDistances[0];
-    riddCoords.forEach((riddle, i) => {
-      if (riddle[1] === closestRiddle.riddleID) {
-        riddCoords.splice(i, 1);
-        this.setState({
-          riddleCoords: riddCoords
-        })
-      }
-    });
+ 
 
-    axios.patch(`http://${process.env.SERVER_API}/user/inventory`, {
+    axios.post(`http://${process.env.SERVER_API}/user/inventory`, {
       id_user: 13,
       id_riddle: closestRiddle.riddleID
     })
       .then((res) => {
-        console.log(JSON.stringify(res));
         this.setState({ renderRiddle: false });
+        riddCoords.forEach((riddle, i) => {
+          if (riddle[1] === closestRiddle.riddleID) {
+            riddCoords.splice(i, 1);
+            this.setState({
+              riddleCoords: riddCoords
+            })
+          }
+        });
       })
       .catch(err => console.error(err))
   }

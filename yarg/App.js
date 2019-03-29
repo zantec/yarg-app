@@ -19,7 +19,8 @@ export default class App extends React.Component {
       userTrasures: [],
       userRiddles: [],
       userLocation: null,
-      reverseLocated: null
+      reverseLocated: null,
+      user: {},
     };
     this.locate = this.locate.bind(this);
     this._getLocationAsync = this._getLocationAsync.bind(this);
@@ -40,6 +41,7 @@ export default class App extends React.Component {
       goldAmount: userObject.gold,
       userTrasures: userObject.treasures,
       userRiddles: userObject.riddles,
+      user: userObject,
     });
   };
 
@@ -67,7 +69,8 @@ export default class App extends React.Component {
             getLocation: this._getLocationAsync.bind(this),
             userLocation: this.state.userLocation,
             treasureCoords: this.state.treasureCoords,
-            username: this.state.username
+            username: this.state.username,
+            user: this.state.user
           }}
           />
         </View>

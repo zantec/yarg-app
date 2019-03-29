@@ -14,6 +14,7 @@ export default class RiddleModal extends Component {
       modalVisible: false,
       showRiddleBoard: false,
       riddleBoardRiddles: [],
+      user: {},
       otherModalVisible: false,
       modalRiddle: '',
       modalTitle: '',
@@ -40,107 +41,125 @@ export default class RiddleModal extends Component {
 
   componentDidMount() {
     Axios.get('http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/riddles?username=server').then(result => {
-      this.setState({ riddleBoardRiddles: result.data });
+      Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(user => {
+        Font.loadAsync({
+          'treamd': require('./assets/fonts/Treamd.ttf'),
+        }).then(res => {
+          this.setState({ fontLoaded: true, user: user.data, riddleBoardRiddles: result.data });
+        });
+      }).catch(err => {
+        console.log(err);
+      });
     }).catch(err => {
       console.log(err);
     });
-    Font.loadAsync({
-      'treamd': require('../assets/fonts/Treamd.ttf'),
-    }).then(res => {
-      this.setState({ fontLoaded: true });
-    });
+
   }
 
   render() {
-    // console.log(this.state);
+    console.log(this.state);
     return (
       // <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
-        <View style={{ marginTop: 22 }}>
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={this.state.modalVisible}
-            onRequestClose={() => { Alert.alert('Modal has been closed.') }}
-          >
-            <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
-              <View style={{ marginTop: 22 }}>
-                <View>
-                  <Text style={style.pirateText}>
-                    {this.state.modalRiddle}
-                  </Text>
+      <View style={{ marginTop: 22 }}>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.modalVisible}
+          onRequestClose={() => { Alert.alert('Modal has been closed.') }}
+        >
+          <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
+            <View style={{ marginTop: 22 }}>
+              <View>
+                <Text style={style.pirateText}>
+                  {this.state.modalRiddle}
+                </Text>
 
-                  <TouchableHighlight
-                    onPress={() => {
-                      this.toggleModal();
-                    }}>
-                    <Text>
-                      Hide Riddle
+                <TouchableHighlight
+                  onPress={() => {
+                    this.toggleModal();
+                  }}>
+                  <Text>
+                    Hide Riddle
                     </Text>
-                  </TouchableHighlight>
-                  <TouchableHighlight
-                    onPress={() => {
-                      this.toggleModal();
-                      this.toggleRiddleBoard();
-                    }}>
-                    <Text>
-                      See local riddles!
+                </TouchableHighlight>
+                <TouchableHighlight
+                  onPress={() => {
+                    this.toggleModal();
+                    this.toggleRiddleBoard();
+                  }}>
+                  <Text>
+                    See local riddles!
                     </Text>
-                  </TouchableHighlight>
-                </View>
+                </TouchableHighlight>
               </View>
-            </ImageBackground>
-          </Modal>
+            </View>
+          </ImageBackground>
+        </Modal>
 
-          <Modal
-            animationType="slide"
-            transparent={false}
-            visible={this.state.showRiddleBoard}
-            onRequestClose={() => { Alert.alert('Modal has been closed.') }}
-          >
-            <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
-              <View style={{ marginTop: 22 }}>
-                <View>
-                  {_.map(this.state.riddleBoardRiddles, riddle => {
-                    return (<View>
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={this.state.showRiddleBoard}
+          onRequestClose={() => { Alert.alert('Modal has been closed.') }}
+        >
+          <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
+            <View style={{ marginTop: 22 }}>
+              <View>
+                <Text>Board Riddles:</Text>
+                {_.map(this.state.riddleBoardRiddles, riddle => {
+                  return (
+                    <View>
                       <Text onPress={() => {
                         this.setState({ modalRiddle: riddle.riddle, modalTitle: riddle.title });
                         this.onOpen();
                       }} style={style.pirateText}>{riddle.title}</Text>
-                    </View>);
-                  })}
-                  <TouchableHighlight
-                    onPress={() => {
-                      this.toggleRiddleBoard();
-                    }}>
-                    <Text>
-                      Back to the map!
-                    </Text>
-                  </TouchableHighlight>
-                </View>
-              </View>
-            </ImageBackground>
-            <Overlay isVisible={this.state.otherModalVisible} closeOnTouchOutside onBackdropPress={this.onClose} overlayBackgroundColor={'rgba(52, 52, 52, 0.0)'}>
-              <View style={{ height: '100%', width: '100%', backgroundColor: 'rgba(52, 52, 52, 0.8)', alignContent: 'center' }}>
-                <ImageBackground style={style.otherBackground} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
-                  <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
-                    <Button style={{ paddingTop: 25 }} title={'Set Active Riddle'} onPress={() => { this.setState({ currentRiddle: this.state.modalRiddle }) }}></Button>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                      <Text style={style.biggerPirateText}>{this.state.modalTitle}</Text>
-                      <Text style={style.pirateText}>{this.state.modalRiddle}</Text>
                     </View>
-                  </ScrollView>
-                </ImageBackground>
+                  );
+                })}
+                <Text>Inventory Riddles:</Text>
+                {this.state.user.inventory === undefined ? console.log(undefined) : _.map(this.state.user.inventory.riddles, riddle => {
+                  return (
+                    <View>
+                      <Text onPress={() => {
+                        this.setState({ modalRiddle: riddle.riddle, modalTitle: riddle.title });
+                        this.onOpen();
+                      }} style={style.pirateText}>{riddle.title}</Text>
+                    </View>
+                  );
+                })}
+                <TouchableHighlight
+                  onPress={() => {
+                    this.toggleRiddleBoard();
+                  }}>
+                  <Text>
+                    Back to the map!
+                    </Text>
+                </TouchableHighlight>
               </View>
-            </Overlay>
-          </Modal>
+            </View>
+          </ImageBackground>
+          <Overlay isVisible={this.state.otherModalVisible} closeOnTouchOutside onBackdropPress={this.onClose} overlayBackgroundColor={'rgba(52, 52, 52, 0.0)'}>
+            <View style={{ height: '100%', width: '100%', backgroundColor: 'rgba(52, 52, 52, 0.8)', alignContent: 'center' }}>
+              <ImageBackground style={style.otherBackground} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
+                <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} overScrollMode='always'>
+                  <Button style={{ paddingTop: 25 }} title={'Set Active Riddle'} onPress={() => { this.setState({ currentRiddle: this.state.modalRiddle }) }}></Button>
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text style={style.biggerPirateText}>{this.state.modalTitle}</Text>
+                    <Text style={style.pirateText}>{this.state.modalRiddle}</Text>
+                  </View>
+                </ScrollView>
+              </ImageBackground>
+            </View>
+          </Overlay>
+        </Modal>
 
-          <TouchableHighlight
-            onPress={() => {
-              this.toggleModal();
-            }}>
-            <Text>View me riddle</Text>
-          </TouchableHighlight>
-        </View>
+        <TouchableHighlight
+          onPress={() => {
+            this.toggleModal();
+          }}>
+          <Text>View me riddle</Text>
+        </TouchableHighlight>
+      </View>
       // </ImageBackground>
     );
   }

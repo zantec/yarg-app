@@ -204,6 +204,7 @@ export default class Map extends React.Component {
   };
 
   componentDidMount() {
+    this.props.getGold()
     Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(result => {
       this.setState({ user: result.data });
     }).catch(err => {
@@ -292,7 +293,7 @@ export default class Map extends React.Component {
                 <View>
                   <Slider
                     minimumValue={500}
-                    maximumValue={this.state.user.gold}
+                    maximumValue={this.props.goldAmount}
                     step={5}
                     value={this.state.value}
                     onValueChange={value => this.setState({ value })}

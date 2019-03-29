@@ -133,10 +133,11 @@ export default class SketchFlag extends React.Component {
               />
               <Slider
                 minimumValue={1}
-                maximumValue={50}
+                maximumValue={150}
                 value={this.state.strokeWidth}
                 onValueChange={value => this.setState({ strokeWidth: value })}
               />
+              <Text>Brush Size</Text> 
               <TouchableHighlight
                 onPress={() => {
                   this.toggleModal();

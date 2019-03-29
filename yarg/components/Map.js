@@ -82,7 +82,7 @@ export default class Map extends React.Component {
           url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
         }).then(locationData => {
           const address = locationData.data.Response.View[0].Result[0].Location.Address
-          console.log(address);
+          // console.log(address); 
           Axios({
             method: 'post',
             url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/treasures',
@@ -112,7 +112,7 @@ export default class Map extends React.Component {
           url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
         }).then(locationData => {
           const address = locationData.data.Response.View[0].Result[0].Location.Address
-          console.log(address);
+          // console.log(address);
           Axios({
             method: 'post',
             url: 'ec2-18-191-183-109.us-east-2.compute.amazonaws.com/api/user/riddles',
@@ -143,7 +143,7 @@ export default class Map extends React.Component {
           url: `https://reverse.geocoder.api.here.com/6.2/reversegeocode.json?prox=${coords.latitude},${coords.longitude},1000&mode=retrieveAddresses&maxresults=1&&app_id=toBDeKPAwo1W6Ckdz4Ek&app_code=7X8XAzjC6dMafzV_dW_TLA`,
         }).then(locationData => {
           const address = locationData.data.Response.View[0].Result[0].Location.Address
-          console.log(address);
+          // console.log(address);
           Axios({
             method: 'post',
             url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/riddles',
@@ -261,12 +261,11 @@ export default class Map extends React.Component {
               {this.state.toggle === 'Riddle' ?
                 <View>
                   <Text>
-                    Choose Riddle Id:
-                </Text>
+                    Choose Treasure Id:
+                  </Text>
                   <Picker
                     selectedValue={this.state.userTreasure}
-                    mode={'dropdown'}
-                    style={{ height: 50, width: 100 }}
+                    style={{ height: 150, width: 100 }}
                     onValueChange={(itemValue, itemIndex) =>
                       this.setState({ userTreasure: itemValue })
                     }>
@@ -279,7 +278,7 @@ export default class Map extends React.Component {
                   <View>
                     <Text>
                       Procedural Generate:
-                  </Text>
+                    </Text>
                     <Switch
                       onValueChange={() => { this.setState({ switchValue: !this.state.switchValue }) }}
                       value={this.state.switchValue} />
@@ -359,7 +358,6 @@ const styles = StyleSheet.create({
     padding: 12,
     minWidth: 56,
     minHeight: 48,
-    color: 'green',
     width: '40%'
   },
   container: {

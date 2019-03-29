@@ -49,7 +49,7 @@ export default class LeaderBoard extends Component {
 
   componentDidMount() {
     const scope = this;
-    console.log(this);
+    // console.log(this);
     axios.get('http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/leaderboard/gold').then((rankData) => {
       scope.setState({
         tableData: rankData.data,
@@ -73,7 +73,7 @@ export default class LeaderBoard extends Component {
   }
 
   render() {
-    console.log(this.state);
+    // console.log(this.state);
     return (
       <ImageBackground style={style.backgroundImage} source={{ uri: 'https://imgur.com/LFmIDsn.jpg' }}>
         <ScrollView style={style.holder} overScrollMode='always'>

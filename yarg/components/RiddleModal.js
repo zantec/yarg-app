@@ -43,7 +43,7 @@ export default class RiddleModal extends Component {
     Axios.get('http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/riddles?username=server').then(result => {
       Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(user => {
         Font.loadAsync({
-          'treamd': require('./assets/fonts/Treamd.ttf'),
+          'treamd': require('../assets/fonts/Treamd.ttf'),
         }).then(res => {
           this.setState({ fontLoaded: true, user: user.data, riddleBoardRiddles: result.data });
         });

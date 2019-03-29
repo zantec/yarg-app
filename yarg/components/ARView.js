@@ -20,9 +20,10 @@ export default class ARView extends React.Component {
       treasureDistances: null,
       riddleCoords: null,
       riddleDistances: null,
-      renderX: true,
-      renderRiddle: true,
+      renderX: false,
+      renderRiddle: false,
     }
+    this.claimTreasureUpdateGold = this.claimTreasureUpdateGold.bind(this);
   }
 
   componentDidMount() {
@@ -50,7 +51,7 @@ export default class ARView extends React.Component {
       });
       treasureDistances.sort((a, b) => a.distance - b.distance);
       this.setState({ treasureDistances });
-      treasureDistances[0].distance < .003 ? this.setState({ renderX: true }) : this.setState({ renderX: false });
+      treasureDistances[0].distance < .04 ? this.setState({ renderX: true }) : this.setState({ renderX: false });
     }
     
     if (this.state.riddleCoords === null) {
@@ -71,7 +72,7 @@ export default class ARView extends React.Component {
       this.setState({ riddleDistances });
       riddleDistances[0].distance < .04 ? this.setState({ renderRiddle: true }) : this.setState({ renderRiddle: false });
     }
-    console.log(this.state);
+    // console.log(this.state);
   }
 
   // ##Enable and handle touch## //
@@ -102,22 +103,30 @@ export default class ARView extends React.Component {
     }
   };
 
-  claimTreasureUpdateGold = () => {
-    const closestX = this.state.treasureDistances.unshift();
+  claimTreasureUpdateGold() {
+    let treasCoords = this.state.treasureCoords
+    const closestX = this.state.treasureDistances.shift();
+    treasCoords.forEach((treasure, i) => {
+      if (treasure[1] === closestX.treasureID) {
+        this.setState({
+          treasureCoords: treasCoords.splice(i, 1)
+        })
+      }
+    });
     
-    //send patch request containing username and amount of gold to insert
-    axios.patch(`http://${process.env.SERVER_API}/user/gold`, {
-      username: 'acreed1998',
+    // send patch request containing username and amount of gold to insert
+    axios.patch('http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/gold', {
+      username: 'ryan',
       amount: closestX.goldAmount
     })
       .then((res) => {
-        console.log(JSON.stringify(res));
         this.setState({ renderX: false });
+        // update the current gold amount
+        this.props.getGold();
       })
       .catch(err => console.error(err))
-    //updates the current gold amount
-    this.props.getGold();
-    Vibration.vibrate();
+    
+    // Vibration.vibrate();
   }
 
   addRiddleToInventory = () => {
@@ -216,7 +225,7 @@ export default class ARView extends React.Component {
     // this.riddleObj.position.z = -20;
     // this.riddleObj.position.y = -10;
     ExpoTHREE.utils.scaleLongestSideToSize(this.riddleObj, 5);
-    ExpoTHREE.utils.alignMesh(this.riddleObj, {x: -1, y: -1, z: -20 });
+    ExpoTHREE.utils.alignMesh(this.riddleObj, {x: 10, y: -1, z: -20 });
     
     
     // SpotLight illuminates elements in a cone shape from a point

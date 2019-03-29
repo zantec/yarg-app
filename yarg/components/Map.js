@@ -7,7 +7,6 @@ import Axios from 'axios';
 import _ from 'lodash';
 import Overlay from 'react-native-modal-overlay';
 import Slider from "react-native-slider";
-import IOSPicker from 'react-native-ios-picker';
 import Toast, { DURATION } from 'react-native-easy-toast'
 
 export default class Map extends React.Component {
@@ -97,7 +96,7 @@ export default class Map extends React.Component {
               id_user: this.props.screenProps !== undefined ? this.props.screenProps.user.id : '2',
             }
           }).then(result => {
-            console.log(result.data);
+            // console.log(result.data);
             this.updateUser();
             this.changeGold();
           }).catch(err => {
@@ -129,7 +128,7 @@ export default class Map extends React.Component {
               id_treasure: scope.userTreasure,
             }
           }).then(result => {
-            console.log(result.data);
+            // console.log(result.data);
             this.updateUser();
           }).catch(err => {
             console.log(err);
@@ -160,7 +159,7 @@ export default class Map extends React.Component {
               id_treasure: scope.userTreasure,
             }
           }).then(result => {
-            console.log(result.data);
+            // console.log(result.data);
             this.updateUser();
           }).catch(err => {
             console.log(err);
@@ -178,6 +177,7 @@ export default class Map extends React.Component {
   updateUser = () => {
     Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(result => {
       this.setState({ user: result.data, text: 'ENTER RIDDLE HERE', value: 500 });
+      this.props.getGold();
       this.refs.toast.show(`Successfully Added ${this.state.toggle}`)
     }).catch(err => {
       console.log(err);
@@ -231,7 +231,7 @@ export default class Map extends React.Component {
   }
 
   render() {
-    console.log(this.state);
+    // console.log(this.state);
     return (
       <View style={{ flex: 1 }}>
         <MapView

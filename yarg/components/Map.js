@@ -242,7 +242,36 @@ export default class Map extends React.Component {
           showsUserLocation={true}
           showsMyLocationButton={true}
           style={{ flex: 1 }}
-        />
+        >
+          {_.map(this.state.user.treasures, treasure => {
+            const coordinate = {
+              latitude: treasure.location_data.latitude,
+              longitude: treasure.location_data.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }
+            return (
+              <Marker
+                image={require('../assets/images/money-3221936.png')}
+                coordinate={coordinate}
+              />
+            );
+          })}
+          {_.map(this.state.user.riddles, riddle => {
+            const coordinate = {
+              latitude: riddle.location_data.latitude,
+              longitude: riddle.location_data.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }
+            return (
+              <Marker
+                image={require('../assets/images/160303_scroll.png')}
+                coordinate={coordinate}
+              />
+            );
+          })}
+        </MapView>
         <View
           style={{
             position: 'absolute',//use absolute position to show button on top of the map

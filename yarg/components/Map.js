@@ -31,14 +31,16 @@ export default class Map extends React.Component {
       riddles: [],
       modalVisible: false,
       markerModalVisible: false,
-      value: 500,
+      value: 0,
       toggle: 'Treasure',
       text: 'ENTER RIDDLE HERE',
       riddleTitle: 'ENTER RIDDLE TITLE HERE',
       userLocation: '',
-      userTreasure: '0',
+      userTreasure: null,
       switchValue: false,
-      user: {},
+      user: {
+        treasures: []
+      },
     }
     this.locate = this.locate.bind(this);
     this.onClose = this.onClose.bind(this);
@@ -177,11 +179,14 @@ export default class Map extends React.Component {
   };
 
   updateUser = () => {
-    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.user !== undefined ? this.props.user.username : 'acreed1998'}`).then(result => {
-      this.setState({ user: result.data, text: 'ENTER RIDDLE HERE', value: 500 });
+    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.user !== undefined ? this.props.user.username : 'acreed1998'}`)
+    .then(result => {
+      this.setState({ user: result.data, text: 'ENTER RIDDLE HERE', value: 0 });
       this.props.getGold();
       this.refs.toast.show(`Successfully Added ${this.state.toggle}`)
-    }).catch(err => {
+      this.props.updateUser();
+    })
+    .catch(err => {
       console.log(err);
     });
   };
@@ -208,7 +213,10 @@ export default class Map extends React.Component {
   componentDidMount() {
     this.props.getGold()
     Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.user !== undefined ? this.props.user.username : 'acreed1998'}`).then(result => {
-      this.setState({ user: result.data });
+      this.setState({ 
+        user: result.data, 
+        userTreasure: result.data.treasures[0].id || null
+      });
     }).catch(err => {
       console.log(err);
     });
@@ -263,7 +271,8 @@ export default class Map extends React.Component {
             }
             return (
               <Marker
-                image={require('./assets/money-3221936.png')}
+                key={treasure.id}
+                image={require('../assets/images/money-3221936.png')}
                 coordinate={coordinate}
                 title={treasure.location_data.address}
                 description={`${treasure.gold_value.toString()} Gold`}
@@ -279,7 +288,7 @@ export default class Map extends React.Component {
             }
             return (
               <Marker
-                image={require('./assets/160303_scroll.png')}
+                image={require('../assets/images/160303_scroll.png')}
                 coordinate={coordinate}
                 title={riddle.location_data.address}
                 description={`${riddle.title}`}
@@ -334,8 +343,8 @@ export default class Map extends React.Component {
                   <Text>Add Treasure:</Text>
                   <Text>Select Gold Value</Text>
                   <Slider
-                    minimumValue={500}
-                    maximumValue={this.props.goldAmount}
+                    minimumValue={1}
+                    maximumValue={this.props.goldAmount > 0 ? this.props.goldAmount : 1}
                     step={5}
                     value={this.state.value}
                     onValueChange={value => this.setState({ value })}
@@ -378,7 +387,10 @@ export default class Map extends React.Component {
               }
               <View style={styles.flex}>
                 <Button buttonStyle={styles.button} title={`Add ${this.state.toggle}`} onPress={() => { this.store() }} />
-                <Button buttonStyle={styles.button} title={`${this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure'}`} onPress={() => { this.setState({ toggle: this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure' }) }} />
+                {this.state.user.treasures.length !== 0 ? 
+                  <Button buttonStyle={styles.button} title={`${this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure'}`} onPress={() => { this.setState({ toggle: this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure' }) }} />
+                  : console.log('no button')}
+                
               </View>
             </View>
           </Overlay>

@@ -29,6 +29,7 @@ export default class MapScreen extends React.Component {
         riddles={this.props.screenProps.riddles}
         getGold={this.props.screenProps.getGold}
         goldAmount={this.props.screenProps.goldAmount}
+        user={this.props.screenProps.user}
         />
         <RiddleModal riddles={this.props.screenProps.riddles.map(riddle => riddle.riddle)[0]}/>
         <NavigationEvents

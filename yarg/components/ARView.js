@@ -134,24 +134,23 @@ export default class ARView extends React.Component {
   addRiddleToInventory = () => {
     let riddCoords = this.state.riddleCoords;
     const closestRiddle = this.state.riddleDistances[0];
- 
+    this.setState({ renderRiddle: false });
+    riddCoords.forEach((riddle, i) => {
+      if (riddle[1] === closestRiddle.riddleID) {
+        riddCoords.splice(i, 1);
+        this.setState({
+          riddleCoords: riddCoords
+        })
+      }
+    });
 
-    axios.post(`http://${process.env.SERVER_API}/user/inventory`, {
-      id_user: 13,
-      id_riddle: closestRiddle.riddleID
-    })
-      .then((res) => {
-        this.setState({ renderRiddle: false });
-        riddCoords.forEach((riddle, i) => {
-          if (riddle[1] === closestRiddle.riddleID) {
-            riddCoords.splice(i, 1);
-            this.setState({
-              riddleCoords: riddCoords
-            })
-          }
-        });
-      })
-      .catch(err => console.error(err))
+
+    // axios.post(`http://${process.env.SERVER_API}/user/inventory`, {
+    //   id_user: 13,
+    //   id_riddle: closestRiddle.riddleID
+    // })
+    //   .then((res) => {})
+    //   .catch(err => console.error(err))
   }
 
   //Get distance between user and treasure or riddles

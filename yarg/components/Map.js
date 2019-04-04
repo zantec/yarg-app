@@ -93,7 +93,7 @@ export default class Map extends React.Component {
               city: address.City,
               state: address.State,
               zipcode: address.PostalCode,
-              id_user: this.props.screenProps !== undefined ? this.props.screenProps.user.id : '2',
+              id_user: this.props.user !== undefined ? this.props.user.id : '2',
             }
           }).then(result => {
             // console.log(result.data);
@@ -122,7 +122,7 @@ export default class Map extends React.Component {
               city: address.City,
               state: address.State,
               zipcode: address.PostalCode,
-              id_user: this.props.screenProps !== undefined ? this.props.screenProps.user.id : '2',
+              id_user: this.props.user !== undefined ? this.props.user.id : '2',
               riddle: scope.text,
               title: scope.riddleTitle,
               id_treasure: scope.userTreasure,
@@ -153,7 +153,7 @@ export default class Map extends React.Component {
               city: address.City,
               state: address.State,
               zipcode: address.PostalCode,
-              id_user: this.props.screenProps !== undefined ? this.props.screenProps.user.id : '2',
+              id_user: this.props.user !== undefined ? this.props.user.id : '2',
               riddle: scope.text,
               title: scope.riddleTitle,
               id_treasure: scope.userTreasure,
@@ -175,7 +175,7 @@ export default class Map extends React.Component {
   };
 
   updateUser = () => {
-    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(result => {
+    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.user !== undefined ? this.props.user.username : 'acreed1998'}`).then(result => {
       this.setState({ user: result.data, text: 'ENTER RIDDLE HERE', value: 500 });
       this.props.getGold();
       this.refs.toast.show(`Successfully Added ${this.state.toggle}`)
@@ -189,7 +189,7 @@ export default class Map extends React.Component {
       method: 'patch',
       url: 'http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/gold',
       data: {
-        username: this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998',
+        username: this.props.user !== undefined ? this.props.user.username : 'acreed1998',
         amount: parseInt(`-${this.state.value}`),
       },
     }).then(result => {
@@ -205,7 +205,7 @@ export default class Map extends React.Component {
 
   componentDidMount() {
     this.props.getGold()
-    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(result => {
+    Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.user !== undefined ? this.props.user.username : 'acreed1998'}`).then(result => {
       this.setState({ user: result.data });
     }).catch(err => {
       console.log(err);

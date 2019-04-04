@@ -30,6 +30,7 @@ export default class ARView extends React.Component {
     // Turn off extra warnings
     THREE.suppressExpoWarnings(true);
     ThreeAR.suppressWarnings();
+    this.props.getGold();
   }
 
   componentDidUpdate(prevProps) {
@@ -72,7 +73,7 @@ export default class ARView extends React.Component {
       this.setState({ riddleDistances });
       riddleDistances[0].distance < .04 ? this.setState({ renderRiddle: true }) : this.setState({ renderRiddle: false });
     }
-    // console.log(this.state);
+    console.log(this.state);
   }
 
   // ##Enable and handle touch## //
@@ -104,12 +105,13 @@ export default class ARView extends React.Component {
   };
 
   claimTreasureUpdateGold() {
-    let treasCoords = this.state.treasureCoords
-    const closestX = this.state.treasureDistances.shift();
+    let treasCoords = this.state.treasureCoords;
+    const closestX = this.state.treasureDistances[0];
     treasCoords.forEach((treasure, i) => {
       if (treasure[1] === closestX.treasureID) {
+        treasCoords.splice(i, 1);
         this.setState({
-          treasureCoords: treasCoords.splice(i, 1)
+          treasureCoords: treasCoords
         })
       }
     });
@@ -130,16 +132,24 @@ export default class ARView extends React.Component {
   }
 
   addRiddleToInventory = () => {
+    let riddCoords = this.state.riddleCoords;
+    const closestRiddle = this.state.riddleDistances[0];
     this.setState({ renderRiddle: false });
-    // const closestRiddle = this.state.riddleDistances.unshift();
-    // axios.patch(`http://${process.env.SERVER_API}/user/inventory`, {
-    //   id_user: 3,
+    riddCoords.forEach((riddle, i) => {
+      if (riddle[1] === closestRiddle.riddleID) {
+        riddCoords.splice(i, 1);
+        this.setState({
+          riddleCoords: riddCoords
+        })
+      }
+    });
+
+
+    // axios.post(`http://${process.env.SERVER_API}/user/inventory`, {
+    //   id_user: 13,
     //   id_riddle: closestRiddle.riddleID
     // })
-    //   .then((res) => {
-    //     console.log(JSON.stringify(res));
-    //     this.setState({ renderRiddle: false });
-    //   })
+    //   .then((res) => {})
     //   .catch(err => console.error(err))
   }
 

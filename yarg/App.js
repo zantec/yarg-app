@@ -90,7 +90,7 @@ export default class App extends React.Component {
   getGold = () => {
     axios.get(`http://${process.env.SERVER_API}/user`, {
       params: {
-        username: 'acreed1998'
+        username: this.state.username
       }
     })
       .then((res) => {

@@ -159,6 +159,7 @@ export default class RiddlesTreasures extends Component {
                   </View>
 
                   <View>
+                    <Text>alsk;dfj</Text>
                     {_.find(this.props.screenProps.user.riddles, riddle => riddle.id_treasure === treasure.id) ?
                       <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                         <View>

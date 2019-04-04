@@ -43,7 +43,7 @@ export default class RiddleModal extends Component {
     Axios.get('http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user/riddles?username=server').then(result => {
       Axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.props.screenProps !== undefined ? this.props.screenProps.user.username : 'acreed1998'}`).then(user => {
         Font.loadAsync({
-          'treamd': require('./assets/fonts/Treamd.ttf'),
+          'treamd': require('../assets/fonts/Treamd.ttf'),
         }).then(res => {
           this.setState({ fontLoaded: true, user: user.data, riddleBoardRiddles: result.data });
         });
@@ -108,7 +108,7 @@ export default class RiddleModal extends Component {
                 <Text>Board Riddles:</Text>
                 {_.map(this.state.riddleBoardRiddles, riddle => {
                   return (
-                    <View>
+                    <View key={riddle.id}>
                       <Text onPress={() => {
                         this.setState({ modalRiddle: riddle.riddle, modalTitle: riddle.title });
                         this.onOpen();
@@ -119,7 +119,7 @@ export default class RiddleModal extends Component {
                 <Text>Inventory Riddles:</Text>
                 {this.state.user.inventory === undefined ? console.log(undefined) : _.map(this.state.user.inventory.riddles, riddle => {
                   return (
-                    <View>
+                    <View key={riddle.id}>
                       <Text onPress={() => {
                         this.setState({ modalRiddle: riddle.riddle, modalTitle: riddle.title });
                         this.onOpen();

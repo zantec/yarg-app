@@ -28,29 +28,27 @@
 
 ## Requirements
 
->ARKit capable iPhone running ios 9.3 or greater.
+>**AR features are only available on ARKit capable iOS devices**
 
->ARCore capable Android device version 7.0 or greater. 
+>iPhone running iOS 10 or greater.
+
+>Android version 5 or greater.
 
 ## Installation
 
+>Download the Expo mobile client for [iOS](https://itunes.com/apps/exponent) or [Android](https://play.google.com/store/apps/details?id=host.exp.exponent)
+
+>OS X only: ```$ brew install watchman```
 ```
 $ git clone https://github.com/zantec/yarg-app.git
-$ cd yarg-app
-$ yarn install
-$ yarn start
-In ViroMedia app "Enter TestBed" and enter endpoint for NGrok server.
+$ cd yarg-app/yarg
+$ npm install -g expo-cli
+$ npm install
+$ npm start
+
+This process will open up Expo Dev tools in the browser. When the Expo packager has finished bundling and the tunnel is ready, open the Expo app on your mobile device, tap the 'Projects' tab, and select the yARg project on localhost. Alternatively, select a specific mobile device simulator from Expo Dev Tools menu and run the app on your machine.
 ```
 
-Alternatively, open in XCode or Android Studio.
-
-If exporting to XCode ```cd ios``` then:
-
-```
-pod install
-```
-
-and open the newly created ```yarg-app.xcworkspace``` in XCode.
 
 ## Roadmap
 

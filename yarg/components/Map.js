@@ -30,10 +30,11 @@ export default class Map extends React.Component {
       treasures: [],
       riddles: [],
       modalVisible: false,
+      markerModalVisible: false,
       value: 500,
       toggle: 'Treasure',
       text: 'ENTER RIDDLE HERE',
-      riddleTitle: 'A Title',
+      riddleTitle: 'ENTER RIDDLE TITLE HERE',
       userLocation: '',
       userTreasure: '0',
       switchValue: false,
@@ -46,6 +47,7 @@ export default class Map extends React.Component {
     this._getLocationAsync = this._getLocationAsync.bind(this);
     this.updateUser = this.updateUser.bind(this);
     this.changeGold = this.changeGold.bind(this);
+    this.onMarkerOpen = this.onMarkerOpen.bind(this);
   }
 
   locate() {
@@ -227,8 +229,16 @@ export default class Map extends React.Component {
     this.setState({ modalVisible: true });
   }
 
+  onMarkerOpen() {
+    this.setState({ markerModalVisible: true });
+  }
+
   onClose() {
     this.setState({ modalVisible: false });
+  }
+
+  onMarkerClose() {
+    this.setState({ markerModalVisible: false });
   }
 
   render() {
@@ -243,7 +253,40 @@ export default class Map extends React.Component {
           showsUserLocation={true}
           showsMyLocationButton={true}
           style={{ flex: 1 }}
-        />
+        >
+          {_.map(this.state.user.treasures, treasure => {
+            const coordinate = {
+              latitude: treasure.location_data.latitude,
+              longitude: treasure.location_data.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }
+            return (
+              <Marker
+                image={require('./assets/money-3221936.png')}
+                coordinate={coordinate}
+                title={treasure.location_data.address}
+                description={`${treasure.gold_value.toString()} Gold`}
+              />
+            );
+          })}
+          {_.map(this.state.user.riddles, riddle => {
+            const coordinate = {
+              latitude: riddle.location_data.latitude,
+              longitude: riddle.location_data.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }
+            return (
+              <Marker
+                image={require('./assets/160303_scroll.png')}
+                coordinate={coordinate}
+                title={riddle.location_data.address}
+                description={`${riddle.title}`}
+              />
+            );
+          })}
+        </MapView>
         <View
           style={{
             position: 'absolute',//use absolute position to show button on top of the map
@@ -286,11 +329,10 @@ export default class Map extends React.Component {
                   </View>
                 </View>
                 : <Text />}
-              <Text>
-                Add {this.state.toggle}:
-              </Text>
               {this.state.toggle === 'Treasure' ?
                 <View>
+                  <Text>Add Treasure:</Text>
+                  <Text>Select Gold Value</Text>
                   <Slider
                     minimumValue={500}
                     maximumValue={this.props.goldAmount}
@@ -303,22 +345,48 @@ export default class Map extends React.Component {
                   </Text>
                 </View>
                 :
-                <TextInput
-                  editable={true}
-                  maxLength={1000}
-                  value={this.state.text}
-                  onFocus={() => {
-                    if (this.state.text === 'ENTER RIDDLE HERE') {
-                      this.setState({ text: '' });
-                    }
-                  }}
-                  onChangeText={(text) => { this.setState({ text }) }}
-                />
+                <View>
+                  {this.state.switchValue === false ?
+                    <View>
+                      <TextInput
+                        editable={true}
+                        maxLength={1000}
+                        value={this.state.riddleTitle}
+                        onFocus={() => {
+                          if (this.state.riddleTitle === 'ENTER RIDDLE TITLE HERE') {
+                            this.setState({ riddleTitle: '' });
+                          }
+                        }}
+                        onChangeText={(riddleTitle) => { this.setState({ riddleTitle }) }}
+                      />
+                      <TextInput
+                        editable={true}
+                        maxLength={1000}
+                        value={this.state.text}
+                        onFocus={() => {
+                          if (this.state.text === 'ENTER RIDDLE HERE') {
+                            this.setState({ text: '' });
+                          }
+                        }}
+                        onChangeText={(text) => { this.setState({ text }) }}
+                      />
+                    </View>
+                    :
+                    <View />
+                  }
+                </View>
               }
               <View style={styles.flex}>
                 <Button buttonStyle={styles.button} title={`Add ${this.state.toggle}`} onPress={() => { this.store() }} />
                 <Button buttonStyle={styles.button} title={`${this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure'}`} onPress={() => { this.setState({ toggle: this.state.toggle === 'Treasure' ? 'Riddle' : 'Treasure' }) }} />
               </View>
+            </View>
+          </Overlay>
+          <Overlay visible={this.state.markerModalVisible} onClose={this.onMarkerClose} closeOnTouchOutside>
+            <View>
+              <Text>
+                Hi
+              </Text>
             </View>
           </Overlay>
         </View>

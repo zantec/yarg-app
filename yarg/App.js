@@ -45,6 +45,14 @@ export default class App extends React.Component {
     });
   };
 
+  updateUser() {
+    axios.get(`http://ec2-3-17-167-48.us-east-2.compute.amazonaws.com/user?username=${this.state.user.username}`).then(res => {
+    this.setState({user : res.data});
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
   render() {
     if (!this.state.isLoadingComplete && !this.props.skipLoadingScreen) {
       return (
@@ -70,7 +78,8 @@ export default class App extends React.Component {
             userLocation: this.state.userLocation,
             treasureCoords: this.state.treasureCoords,
             username: this.state.username,
-            user: this.state.user
+            user: this.state.user,
+            updateUser: this.updateUser.bind(this),
           }}
           />
         </View>
